@@ -1,6 +1,6 @@
 function Home() {
     return <p style={{ display: "flex", width: "400px", margin: "auto", textAlign: "justify" }}>
-        Não é o crítico que importa; nem aquele que aponta onde
+        Cidadania em uma república: Não é o crítico que importa; nem aquele que aponta onde
         foi que o homem tropeçou ou como o autor das façanhas
         poderia ter feito melhor.
         O crédito pertence ao homem que está por inteiro na
