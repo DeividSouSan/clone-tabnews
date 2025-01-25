@@ -29,3 +29,9 @@ test("POST to /api/v1/migrations should return 200", async () => {
   expect(Array.isArray(response2Body)).toBe(true);
   expect(response2Body.length).toEqual(0);
 })
+
+afterEach(async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+  const responseBody = await response.json();
+  expect(responseBody.dependencies.database.opened_connections).toEqual(1);
+});
