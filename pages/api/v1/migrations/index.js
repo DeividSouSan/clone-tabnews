@@ -1,11 +1,11 @@
-import migrationRunner from 'node-pg-migrate';
+import migrationRunner from "node-pg-migrate";
 import { join } from "node:path";
 import database from "/infra/database";
 
 export default async function migrations(request, response) {
-  if (!['GET', 'POST'].includes(request.method)) {
+  if (!["GET", "POST"].includes(request.method)) {
     return response.status(405).json({
-      error: `Method ${request.method} Not Allowed.`
+      error: `Method ${request.method} Not Allowed.`,
     });
   }
 
@@ -15,11 +15,11 @@ export default async function migrations(request, response) {
     dbClient = await database.getNewClient();
     const deafultMigrationOptions = {
       dbClient: dbClient,
-      dir: join('infra', 'migrations'),
+      dir: join("infra", "migrations"),
       dryRun: true,
-      direction: 'up',
+      direction: "up",
       verbose: true,
-      migrationsTable: 'pgmigrations',
+      migrationsTable: "pgmigrations",
     };
 
     if (request.method === "GET") {
@@ -31,7 +31,7 @@ export default async function migrations(request, response) {
       const migratedMigrations = await migrationRunner({
         ...deafultMigrationOptions,
         dryRun: false,
-      })
+      });
 
       if (migratedMigrations.length > 0) {
         return response.status(201).json(migratedMigrations);
@@ -42,7 +42,7 @@ export default async function migrations(request, response) {
   } catch (err) {
     console.error(err);
     return response.status(500).json({
-      error: "Internal Server Error."
+      error: "Internal Server Error.",
     });
   } finally {
     await dbClient.end();
