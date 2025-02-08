@@ -1,4 +1,4 @@
-import { Client } from 'pg';
+import { Client } from "pg";
 
 async function query(queryObject) {
   let client;
@@ -22,7 +22,7 @@ async function getNewClient() {
     host: process.env.POSTGRES_HOST,
     port: process.env.POSTGRES_PORT,
     database: process.env.POSTGRES_DB,
-    ssl: process.env.NODE_ENV === 'production' ? true : false,
+    ssl: process.env.NODE_ENV === "production" ? true : false,
   });
 
   await client.connect();
