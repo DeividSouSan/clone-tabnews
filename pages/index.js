@@ -22,11 +22,3 @@ function Home() {
 }
 
 export default Home;
-
-function teste() {
-  return "o";
-}
-
-function teste2() {
-  return "teste";
-}

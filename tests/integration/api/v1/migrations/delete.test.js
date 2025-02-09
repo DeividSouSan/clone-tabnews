@@ -22,5 +22,9 @@ test("PUT to /api/v1/migrations should return 405", async () => {
 afterEach(async () => {
   const response = await fetch("http://localhost:3000/api/v1/status");
   const responseBody = await response.json();
-  expect(responseBody.dependencies.database.opened_connections).toEqual(1);
+  if (responseBody.dependencies.database.opened_connections !== 1) {
+    throw new Error(
+      "Conexões que foram abertas não foram fechadas adequadamente.",
+    );
+  }
 });
