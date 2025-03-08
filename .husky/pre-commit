@@ -1,0 +1,4 @@
+
+echo "Checking for secrets in file(s)"
+
+npx --no-install lint-staged
