@@ -21,4 +21,3 @@ describe("GET to /api/v1/status", () => {
     });
   });
 });
-
