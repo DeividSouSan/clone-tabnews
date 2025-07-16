@@ -23,7 +23,7 @@ const controller = {
   errorHandlers: {
     onError: onErrorHandler,
     onNoMatch: onNoMatchHandler,
-  }
+  },
 };
 
 export default controller;
