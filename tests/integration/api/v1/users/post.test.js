@@ -75,9 +75,9 @@ describe("POST /api/v1/users", () => {
         name: "ValidationError",
         message: "O email fornercido já está sendo utilizado",
         action: "Utilize outro email para realizar o cadastro",
-        status_code: 400
-      })
-    })
+        status_code: 400,
+      });
+    });
 
     test("With duplicated 'username'", async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
@@ -114,11 +114,10 @@ describe("POST /api/v1/users", () => {
         name: "ValidationError",
         message: "O nome de usuário fornercido já está sendo utilizado",
         action: "Utilize outro nome de usuário para realizar o cadastro",
-        status_code: 400
-      })
-    })
+        status_code: 400,
+      });
+    });
   });
-
 
   afterEach(async () => {
     const response = await fetch("http://localhost:3000/api/v1/status");

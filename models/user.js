@@ -1,5 +1,5 @@
-import database from '/infra/database.js';
-import { ValidationError } from '/infra/errors';
+import database from "/infra/database.js";
+import { ValidationError } from "/infra/errors";
 
 async function create(userData) {
   // fluxo de execução
@@ -9,7 +9,7 @@ async function create(userData) {
   return newUser;
 
   // detalhes de implementação
-async function validateUniqueUsername(username) {
+  async function validateUniqueUsername(username) {
     const results = await database.query({
       text: `
           SELECT
@@ -19,13 +19,13 @@ async function validateUniqueUsername(username) {
           WHERE
             LOWER(username) = LOWER($1)
           ;`,
-      values: [username]
+      values: [username],
     });
     if (results.rowCount > 0) {
       throw new ValidationError({
         message: "O nome de usuário fornercido já está sendo utilizado",
         action: "Utilize outro nome de usuário para realizar o cadastro",
-      })
+      });
     }
   }
 
@@ -39,13 +39,13 @@ async function validateUniqueUsername(username) {
           WHERE
             LOWER(email) = LOWER($1)
           ;`,
-      values: [userEmail]
+      values: [userEmail],
     });
     if (results.rowCount > 0) {
       throw new ValidationError({
         message: "O email fornercido já está sendo utilizado",
         action: "Utilize outro email para realizar o cadastro",
-      })
+      });
     }
   }
 
