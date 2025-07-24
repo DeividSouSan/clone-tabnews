@@ -1,10 +1,9 @@
 import database from "/infra/database.js";
 import { NotFoundError, ValidationError } from "/infra/errors";
 
-
 async function findOneByUsername(username) {
   const userFound = await runSelectQuery(username);
-  return userFound
+  return userFound;
 
   async function runSelectQuery(username) {
     const results = await database.query({

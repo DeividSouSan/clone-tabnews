@@ -24,7 +24,9 @@ describe("GET /api/v1/users/[username]", () => {
 
       expect(response1.status).toBe(201);
 
-      const response2 = await fetch("http://localhost:3000/api/v1/users/MesmoCase");
+      const response2 = await fetch(
+        "http://localhost:3000/api/v1/users/MesmoCase",
+      );
 
       expect(response2.status).toBe(200);
 
@@ -59,7 +61,9 @@ describe("GET /api/v1/users/[username]", () => {
 
       expect(response1.status).toBe(201);
 
-      const response2 = await fetch("http://localhost:3000/api/v1/users/casediferente");
+      const response2 = await fetch(
+        "http://localhost:3000/api/v1/users/casediferente",
+      );
 
       expect(response2.status).toBe(200);
 
@@ -79,8 +83,10 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
     });
 
-     test("With no match", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/users/UsuárioInexistente");
+    test("With no match", async () => {
+      const response = await fetch(
+        "http://localhost:3000/api/v1/users/UsuárioInexistente",
+      );
 
       expect(response.status).toBe(404);
 
@@ -93,8 +99,6 @@ describe("GET /api/v1/users/[username]", () => {
         status_code: 404,
       });
     });
-
-
   });
 
   afterEach(async () => {
