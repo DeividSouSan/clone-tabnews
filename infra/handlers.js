@@ -21,7 +21,7 @@ function onErrorHandler(error, request, response) {
   });
 
   console.error(publicErrorObject);
-  response.status(publicErrorObject.statusCode).json(publicErrorObject);
+  return response.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
 const controller = {
