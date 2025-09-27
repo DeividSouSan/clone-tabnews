@@ -3,7 +3,7 @@ import {
   MethodNotAllowedError,
   NotFoundError,
   UnauthorizedError,
-  ValidationError,
+  ValidationError
 } from "./errors/index.js";
 import * as cookie from "cookie";
 import session from "models/session.js";
@@ -15,16 +15,17 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
-  if (
-    error instanceof ValidationError ||
-    error instanceof NotFoundError ||
-    error instanceof UnauthorizedError
-  ) {
+  if (error instanceof ValidationError || error instanceof NotFoundError) {
+    return response.status(error.statusCode).json(error);
+  }
+
+  if (error instanceof UnauthorizedError) {
+    clearSessionCookie(response);
     return response.status(error.statusCode).json(error);
   }
 
   const publicErrorObject = new InternalServerError({
-    cause: error,
+    cause: error
   });
 
   console.error(publicErrorObject);
@@ -36,7 +37,7 @@ async function setCookie(sessionToken, response) {
     path: "/",
     maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
     secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
+    httpOnly: true
   });
   response.setHeader("Set-Cookie", setCookie);
 }
@@ -46,7 +47,7 @@ async function clearSessionCookie(response) {
     path: "/",
     maxAge: 0,
     secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
+    httpOnly: true
   });
   response.setHeader("Set-Cookie", setCookie);
 }
@@ -54,10 +55,10 @@ async function clearSessionCookie(response) {
 const controller = {
   errorHandlers: {
     onError: onErrorHandler,
-    onNoMatch: onNoMatchHandler,
+    onNoMatch: onNoMatchHandler
   },
   setCookie,
-  clearSessionCookie,
+  clearSessionCookie
 };
 
 export default controller;
