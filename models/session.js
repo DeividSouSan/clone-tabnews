@@ -22,13 +22,13 @@ async function findOneValidByToken(sessionToken) {
           LIMIT
             1
           ;`,
-      values: [sessionToken]
+      values: [sessionToken],
     });
 
     if (results.rowCount === 0) {
       throw new UnauthorizedError({
         message: "Usuário não possui sessão ativa.",
-        action: "Verifique se este usuário está logado e tente novamente."
+        action: "Verifique se este usuário está logado e tente novamente.",
       });
     }
 
@@ -53,7 +53,7 @@ async function create(userId) {
           ($1, $2, $3)
         RETURNING *
       ;`,
-      values: [token, userId, expiresAt]
+      values: [token, userId, expiresAt],
     });
 
     return results.rows[0];
@@ -79,7 +79,7 @@ async function renew(sessionId) {
         RETURNING
           *
         ;`,
-      values: [sessionId, expiresAt]
+      values: [sessionId, expiresAt],
     });
 
     return results.rows[0];
@@ -104,7 +104,7 @@ async function expireById(sessionId) {
         RETURNING
           *
         ;`,
-      values: [sessionId]
+      values: [sessionId],
     });
 
     return results.rows[0];
@@ -116,7 +116,7 @@ const session = {
   findOneValidByToken,
   renew,
   expireById,
-  EXPIRATION_IN_MILLISECONDS
+  EXPIRATION_IN_MILLISECONDS,
 };
 
 export default session;
