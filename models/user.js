@@ -97,6 +97,7 @@ async function create(userData) {
   await validateUniqueUsername(userData.username);
   await validateUniqueEmail(userData.email);
   await hashPasswordInObject(userData);
+  injectDefaultFeaturesInObject(userData);
 
   const newUser = await runCreateUserQuery(userData);
   return newUser;
@@ -104,21 +105,25 @@ async function create(userData) {
   // detalhes de implementação
 
   async function runCreateUserQuery(userData) {
-    const { username, email, password } = userData;
+    const { username, email, password, features } = userData;
 
     const results = await database.query({
       text: `
           INSERT INTO
-            users (username, email, password)
+            users (username, email, password, features)
           VALUES
-            ($1, $2, $3)
+            ($1, $2, $3, $4)
           RETURNING
             *
           ;`,
-      values: [username, email, password],
+      values: [username, email, password, features],
     });
 
     return results.rows[0];
+  }
+
+  function injectDefaultFeaturesInObject(userData) {
+    userData.features = ["read:activation_token"];
   }
 }
 
