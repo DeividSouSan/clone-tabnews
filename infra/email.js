@@ -11,6 +11,10 @@ const transporter = nodemailer.createTransport({
 });
 
 async function send(mailOptions) {
+  if (!mailOptions.sender) {
+    mailOptions.sender = "<contato@curso.dev>";
+  }
+
   await transporter.sendMail(mailOptions);
 }
 
