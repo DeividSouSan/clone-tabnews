@@ -127,6 +127,30 @@ async function create(userData) {
   }
 }
 
+async function setFeatures(userId, features) {
+  const updatedUser = await runUpdateQuery(userId);
+  return updatedUser;
+
+  async function runUpdateQuery(userId) {
+    const results = await database.query({
+      text: `
+      UPDATE
+        users
+      SET
+        features = $2,
+        updated_at = timezone('utc', now())
+      WHERE
+        id = $1
+      RETURNING 
+      *
+    ;`,
+      values: [userId, features],
+    });
+
+    return results.rows[0];
+  }
+}
+
 async function update(username, newUserData) {
   const currentUserData = await findOneByUsername(username);
 
@@ -229,6 +253,7 @@ const user = {
   findOneByUsername,
   findOneByEmail,
   findOneById,
+  setFeatures,
   update,
 };
 

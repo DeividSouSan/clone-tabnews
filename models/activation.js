@@ -3,8 +3,14 @@ import dedent from "dedent";
 import database from "infra/database";
 import webserver from "infra/webserver";
 import { NotFoundError } from "infra/errors";
+import user from "./user";
 
 const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000; // 15 minutes
+
+async function activateUserById(userId) {
+  const activatedUser = user.setFeatures(userId, ["create:session"]);
+  return activatedUser;
+}
 
 async function createToken(userId) {
   const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILLISECONDS);
@@ -61,6 +67,29 @@ async function findValidTokenById(tokenId) {
   }
 }
 
+async function markTokenAsUsed(tokenId) {
+  const usedToken = await runUpdateQuery(tokenId);
+  return usedToken;
+
+  async function runUpdateQuery(tokenId) {
+    const results = await database.query({
+      text: `
+        UPDATE 
+          user_activation_tokens
+        SET
+          used = timezone('utc', now()),
+          updated_at = timezone('utc', now())
+        WHERE
+          id = $1
+        RETURNING
+          *
+      `,
+      values: [tokenId],
+    });
+
+    return results.rows[0];
+  }
+}
 async function sendEmailToUser(user, token) {
   await email.send({
     to: user.email,
@@ -76,8 +105,10 @@ async function sendEmailToUser(user, token) {
 }
 
 const activation = {
+  activateUserById,
   createToken,
   findValidTokenById,
+  markTokenAsUsed,
   sendEmailToUser,
 };
 
