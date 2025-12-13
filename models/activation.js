@@ -2,6 +2,7 @@ import email from "infra/email";
 import dedent from "dedent";
 import database from "infra/database";
 import webserver from "infra/webserver";
+import { NotFoundError } from "infra/errors";
 
 const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000; // 15 minutes
 
@@ -28,24 +29,34 @@ async function createToken(userId) {
   }
 }
 
-async function findOneById(userId) {
-  const tokenId = await runSelectQuery();
-  return tokenId;
+async function findValidTokenById(tokenId) {
+  const tokenObject = await runSelectQuery();
+  return tokenObject;
 
   async function runSelectQuery() {
     const results = await database.query({
       text: `
-      SELECT 
-        id 
-      FROM 
-        user_activation_tokens
-      WHERE
-        user_id = $1 
-      LIMIT
-        1
+        SELECT 
+          * 
+        FROM 
+          user_activation_tokens
+        WHERE
+          id = $1 
+          AND used IS NULL 
+          AND expires_at > NOW()
+        LIMIT
+          1
       ;`,
-      values: [userId],
+      values: [tokenId],
     });
+
+    if (results.rowCount === 0) {
+      throw NotFoundError({
+        message:
+          "O token de ativação utilizado não foi encontrado no sistema ou expirou.",
+        action: "Faça um novo cadastro.",
+      });
+    }
     return results.rows[0];
   }
 }
@@ -66,7 +77,7 @@ async function sendEmailToUser(user, token) {
 
 const activation = {
   createToken,
-  findOneById,
+  findValidTokenById,
   sendEmailToUser,
 };
 

@@ -72,6 +72,14 @@ async function deleteEmails() {
   });
 }
 
+function extractUUID(text) {
+  const pattern =
+    /\s*[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89aAbB][0-9a-f]{3}-[0-9a-f]{12}/;
+
+  const UUID = pattern.exec(text)[0];
+
+  return UUID;
+}
 async function getLastEmail() {
   const emailListResponse = await fetch(emailHttpUrl);
   const emailListBody = await emailListResponse.json();
@@ -94,6 +102,7 @@ const orchestrator = {
   createUser,
   createSession,
   deleteEmails,
+  extractUUID,
   getLastEmail,
 };
 
