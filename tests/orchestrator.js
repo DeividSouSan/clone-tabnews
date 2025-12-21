@@ -5,6 +5,7 @@ import session from "models/session.js";
 
 import retry from "async-retry";
 import { faker } from "@faker-js/faker/.";
+import activation from "models/activation";
 
 const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}/messages`;
 
@@ -59,6 +60,10 @@ async function createUser(userObject) {
   });
 }
 
+async function activateUser(createdUser) {
+  return await activation.activateUserById(createdUser.id);
+}
+
 async function createSession(userId) {
   return await session.create(userId);
 }
@@ -104,6 +109,7 @@ const orchestrator = {
   deleteEmails,
   extractUUID,
   getLastEmail,
+  activateUser,
 };
 
 export default orchestrator;
