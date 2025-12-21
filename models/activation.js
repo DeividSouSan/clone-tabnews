@@ -8,7 +8,10 @@ import user from "./user";
 const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000; // 15 minutes
 
 async function activateUserById(userId) {
-  const activatedUser = user.setFeatures(userId, ["create:session"]);
+  const activatedUser = user.setFeatures(userId, [
+    "create:session",
+    "read:session",
+  ]);
   return activatedUser;
 }
 

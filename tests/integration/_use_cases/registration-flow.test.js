@@ -13,6 +13,9 @@ beforeAll(async () => {
 describe("Use Case: Registration Flow (all successful)", () => {
   let createUserResponseBody;
   let activationTokenId;
+  let activationResponseBody;
+  let createSessionResponseBody;
+  let activatedUser;
   test("Create user account", async () => {
     const createUserResponse = await fetch(
       "http://localhost:3000/api/v1/users",
@@ -75,12 +78,12 @@ describe("Use Case: Registration Flow (all successful)", () => {
 
     expect(activationResponse.status).toBe(200);
 
-    const activationResponseBody = await activationResponse.json();
+    activationResponseBody = await activationResponse.json();
 
     expect(Date.parse(activationResponseBody.used)).not.toBeNaN();
 
-    const activatedUser = await user.findOneByUsername("RegistrationFlow");
-    expect(activatedUser.features).toEqual(["create:session"]);
+    activatedUser = await user.findOneByUsername("RegistrationFlow");
+    expect(activatedUser.features).toEqual(["create:session", "read:session"]);
   });
   test("Login", async () => {
     const createSessionResponse = await fetch(
@@ -99,9 +102,29 @@ describe("Use Case: Registration Flow (all successful)", () => {
 
     expect(createSessionResponse.status).toBe(201);
 
-    const createSessionResponseBody = await createSessionResponse.json();
+    createSessionResponseBody = await createSessionResponse.json();
 
     expect(createSessionResponseBody.user_id).toBe(createUserResponseBody.id);
   });
-  test("Get user information", async () => {});
+  test("Get user information", async () => {
+    const userResponse = await fetch("http://localhost:3000/api/v1/user", {
+      method: "GET",
+      headers: {
+        Cookie: `session_id=${createSessionResponseBody.token}`,
+      },
+    });
+
+    expect(userResponse.status).toBe(200);
+
+    const userResponseBody = await userResponse.json();
+    expect(userResponseBody).toEqual({
+      id: activatedUser.id,
+      username: "RegistrationFlow",
+      email: "registration.flow@curso.dev",
+      features: ["create:session", "read:session"],
+      password: activatedUser.password,
+      created_at: activatedUser.created_at.toISOString(),
+      updated_at: activatedUser.updated_at.toISOString(),
+    });
+  });
 });
