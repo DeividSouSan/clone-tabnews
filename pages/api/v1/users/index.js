@@ -5,6 +5,8 @@ import activation from "models/activation.js";
 
 const router = createRouter();
 
+router.use(controller.injectUser);
+router.use(controller.checkUserFeature("create:user"), postHandler);
 router.post(postHandler);
 
 export default router.handler(controller.errorHandlers);

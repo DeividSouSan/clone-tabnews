@@ -136,6 +136,37 @@ describe("POST /api/v1/users", () => {
     });
   });
 
+  describe("Authenticated user", () => {
+    test("With valid data", async () => {
+      const createdUser = await orchestrator.createUser();
+
+      const sessionObject = await orchestrator.createSession(createdUser.id);
+
+      const response = await fetch("http://localhost:3000/api/v1/users", {
+        method: "POST",
+        headers: {
+          Cookie: `session_id=${sessionObject.token}`,
+        },
+        body: JSON.stringify({
+          username: "AuthCreateUser",
+          email: "auth.create.user@curso.dev",
+          password: "AuthCreateUser",
+        }),
+      });
+
+      expect(response.status).toBe(403);
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        name: "ForbiddenError",
+        message: "Você não possui permissão para executar essa ação.",
+        action: "Verifique se o seu usuário possui a feature create:user.",
+        status_code: 403,
+      });
+    });
+  });
+
   afterEach(async () => {
     const response = await fetch("http://localhost:3000/api/v1/status");
     const responseBody = await response.json();
