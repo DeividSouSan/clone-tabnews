@@ -2,13 +2,25 @@ import email from "infra/email";
 import dedent from "dedent";
 import database from "infra/database";
 import webserver from "infra/webserver";
-import { NotFoundError } from "infra/errors";
+import { ForbiddenError, NotFoundError } from "infra/errors";
 import user from "./user";
+import authorization from "./authorization";
 
 const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000; // 15 minutes
 
 async function activateUserById(userId) {
-  const activatedUser = user.setFeatures(userId, [
+  const targetUser = await user.findOneById(userId);
+
+  const isAuthorized = authorization.check(targetUser, "read:activation_token");
+
+  if (!isAuthorized) {
+    throw new ForbiddenError({
+      message: "Você não pode mais utilizar tokens de ativação.",
+      action: "Entre em contato com o suporte.",
+    });
+  }
+
+  const activatedUser = await user.setFeatures(userId, [
     "create:session",
     "read:session",
   ]);
@@ -38,11 +50,11 @@ async function createToken(userId) {
   }
 }
 
-async function findValidTokenById(tokenId) {
-  const tokenObject = await runSelectQuery();
+async function findTokenById(tokenId) {
+  const tokenObject = await runSelectQuery(tokenId);
   return tokenObject;
 
-  async function runSelectQuery() {
+  async function runSelectQuery(tokenId) {
     const results = await database.query({
       text: `
         SELECT 
@@ -60,7 +72,7 @@ async function findValidTokenById(tokenId) {
     });
 
     if (results.rowCount === 0) {
-      throw NotFoundError({
+      throw new NotFoundError({
         message:
           "O token de ativação utilizado não foi encontrado no sistema ou expirou.",
         action: "Faça um novo cadastro.",
@@ -110,9 +122,10 @@ async function sendEmailToUser(user, token) {
 const activation = {
   activateUserById,
   createToken,
-  findValidTokenById,
+  findTokenById,
   markTokenAsUsed,
   sendEmailToUser,
+  EXPIRATION_IN_MILLISECONDS,
 };
 
 export default activation;

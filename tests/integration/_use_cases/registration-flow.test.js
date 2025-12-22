@@ -62,7 +62,7 @@ describe("Use Case: Registration Flow (all successful)", () => {
     );
 
     const activationTokenObject =
-      await activation.findValidTokenById(activationTokenId);
+      await activation.findTokenById(activationTokenId);
 
     expect(activationTokenObject.user_id).toBe(createUserResponseBody.id);
     expect(activationTokenObject.used).toBe(null);

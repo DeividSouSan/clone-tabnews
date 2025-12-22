@@ -59,7 +59,7 @@ async function clearSessionCookie(response) {
   response.setHeader("Set-Cookie", setCookie);
 }
 
-async function injectAnonymousOrUser(request, response, next) {
+async function injectUser(request, response, next) {
   if (request.cookies?.session_id) {
     await injectAuthenticatedUser(request);
     return next();
@@ -90,8 +90,8 @@ async function injectAnonymousOrUser(request, response, next) {
   }
 }
 
-function canRequest(feature) {
-  return function canRequestMiddleware(request, response, next) {
+function checkUserFeature(feature) {
+  return function checkUserFeatureMiddleware(request, response, next) {
     const userTryingToRequest = request.context.user;
     if (authorization.check(userTryingToRequest, feature)) {
       return next();
@@ -110,8 +110,8 @@ const controller = {
   },
   setCookie,
   clearSessionCookie,
-  injectAnonymousOrUser,
-  canRequest,
+  injectUser,
+  checkUserFeature,
 };
 
 export default controller;
