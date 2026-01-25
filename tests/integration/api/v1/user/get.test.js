@@ -22,14 +22,14 @@ describe("GET /api/v1/user", () => {
         name: "ForbiddenError",
         message: "Você não possui permissão para executar essa ação.",
         action: `Verifique se o seu usuário possui a feature read:session.`,
-        status_code: 403,
+        status_code: 403
       });
     });
   });
   describe("Authenticated user", () => {
     test("With valid session", async () => {
       const createdUser = await orchestrator.createUser({
-        username: "UserWithValidSession",
+        username: "UserWithValidSession"
       });
 
       const activatedUser = await orchestrator.activateUser(createdUser);
@@ -37,8 +37,8 @@ describe("GET /api/v1/user", () => {
 
       const response = await fetch("http://localhost:3000/api/v1/user", {
         headers: {
-          Cookie: "session_id=" + sessionObject.token,
-        },
+          Cookie: "session_id=" + sessionObject.token
+        }
       });
 
       expect(response.status).toBe(200);
@@ -46,7 +46,7 @@ describe("GET /api/v1/user", () => {
       const cacheControl = response.headers.get("Cache-control");
 
       expect(cacheControl).toBe(
-        "no-store, no-cache, max-age=0, must-revalidate",
+        "no-store, no-cache, max-age=0, must-revalidate"
       );
 
       const responseBody = await response.json();
@@ -55,10 +55,10 @@ describe("GET /api/v1/user", () => {
         id: createdUser.id,
         username: "UserWithValidSession",
         email: createdUser.email,
-        features: ["create:session", "read:session"],
+        features: ["create:session", "read:session", "update:user"],
         password: createdUser.password,
         created_at: createdUser.created_at.toISOString(),
-        updated_at: activatedUser.updated_at.toISOString(),
+        updated_at: activatedUser.updated_at.toISOString()
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -67,20 +67,20 @@ describe("GET /api/v1/user", () => {
 
       // session renewal assertions
       const renewedSessionObject = await session.findOneValidByToken(
-        sessionObject.token,
+        sessionObject.token
       );
 
       expect(renewedSessionObject.expires_at > sessionObject.expires_at).toBe(
-        true,
+        true
       );
 
       expect(renewedSessionObject.updated_at > sessionObject.updated_at).toBe(
-        true,
+        true
       );
 
       // set-cookie assertions
       const parsedSetCookie = setCookieParser(response, {
-        map: true,
+        map: true
       });
 
       expect(parsedSetCookie.session_id).toEqual({
@@ -88,7 +88,7 @@ describe("GET /api/v1/user", () => {
         value: renewedSessionObject.token,
         maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
         path: "/",
-        httpOnly: true,
+        httpOnly: true
       });
     });
 
@@ -98,8 +98,8 @@ describe("GET /api/v1/user", () => {
 
       const response = await fetch("http://localhost:3000/api/v1/user", {
         headers: {
-          Cookie: "session_id=" + token,
-        },
+          Cookie: "session_id=" + token
+        }
       });
 
       expect(response.status).toBe(401);
@@ -110,17 +110,17 @@ describe("GET /api/v1/user", () => {
         name: "UnauthorizedError",
         message: "Usuário não possui sessão ativa.",
         action: "Verifique se este usuário está logado e tente novamente.",
-        status_code: 401,
+        status_code: 401
       });
     });
 
     test("With expired session", async () => {
       jest.useFakeTimers({
-        now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS),
+        now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS)
       });
 
       const createdUser = await orchestrator.createUser({
-        username: "UserWithExpiredSession",
+        username: "UserWithExpiredSession"
       });
 
       const sessionObject = await orchestrator.createSession(createdUser.id);
@@ -129,8 +129,8 @@ describe("GET /api/v1/user", () => {
 
       const response = await fetch("http://localhost:3000/api/v1/user", {
         headers: {
-          Cookie: "session_id=" + sessionObject.token,
-        },
+          Cookie: "session_id=" + sessionObject.token
+        }
       });
 
       expect(response.status).toBe(401);
@@ -141,19 +141,19 @@ describe("GET /api/v1/user", () => {
         name: "UnauthorizedError",
         message: "Usuário não possui sessão ativa.",
         action: "Verifique se este usuário está logado e tente novamente.",
-        status_code: 401,
+        status_code: 401
       });
     });
 
     test("With almost expired session", async () => {
       jest.useFakeTimers({
         now: new Date(
-          Date.now() - session.EXPIRATION_IN_MILLISECONDS + 60 * 1000,
-        ), // Volta 29 dias no passado, faltando 1 minuto para expirar
+          Date.now() - session.EXPIRATION_IN_MILLISECONDS + 60 * 1000
+        ) // Volta 29 dias no passado, faltando 1 minuto para expirar
       });
 
       const createdUser = await orchestrator.createUser({
-        username: "UserWithAlmostExpiredSession",
+        username: "UserWithAlmostExpiredSession"
       });
       const activatedUser = await orchestrator.activateUser(createdUser);
       const sessionObject = await orchestrator.createSession(activatedUser.id);
@@ -162,8 +162,8 @@ describe("GET /api/v1/user", () => {
 
       const response = await fetch("http://localhost:3000/api/v1/user", {
         headers: {
-          Cookie: "session_id=" + sessionObject.token,
-        },
+          Cookie: "session_id=" + sessionObject.token
+        }
       });
 
       expect(response.status).toBe(200);
@@ -174,10 +174,10 @@ describe("GET /api/v1/user", () => {
         id: createdUser.id,
         username: "UserWithAlmostExpiredSession",
         email: createdUser.email,
-        features: ["create:session", "read:session"],
+        features: ["create:session", "read:session", "update:user"],
         password: createdUser.password,
         created_at: createdUser.created_at.toISOString(),
-        updated_at: activatedUser.updated_at.toISOString(),
+        updated_at: activatedUser.updated_at.toISOString()
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -186,20 +186,20 @@ describe("GET /api/v1/user", () => {
 
       // session renewal assertions
       const renewedSessionObject = await session.findOneValidByToken(
-        sessionObject.token,
+        sessionObject.token
       );
 
       expect(renewedSessionObject.expires_at > sessionObject.expires_at).toBe(
-        true,
+        true
       );
 
       expect(renewedSessionObject.updated_at > sessionObject.updated_at).toBe(
-        true,
+        true
       );
 
       // set-cookie assertions
       const parsedSetCookie = setCookieParser(response, {
-        map: true,
+        map: true
       });
 
       expect(parsedSetCookie.session_id).toEqual({
@@ -207,7 +207,7 @@ describe("GET /api/v1/user", () => {
         value: renewedSessionObject.token,
         maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
         path: "/",
-        httpOnly: true,
+        httpOnly: true
       });
     });
   });
@@ -217,7 +217,7 @@ describe("GET /api/v1/user", () => {
     const responseBody = await response.json();
     if (responseBody.dependencies.database.opened_connections !== 1) {
       throw new Error(
-        "Conexões que foram abertas não foram fechadas adequadamente.",
+        "Conexões que foram abertas não foram fechadas adequadamente."
       );
     }
   });

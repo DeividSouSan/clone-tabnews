@@ -16,20 +16,21 @@ describe("Use Case: Registration Flow (all successful)", () => {
   let activationResponseBody;
   let createSessionResponseBody;
   let activatedUser;
+
   test("Create user account", async () => {
     const createUserResponse = await fetch(
       "http://localhost:3000/api/v1/users",
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           username: "RegistrationFlow",
           email: "registration.flow@curso.dev",
-          password: "RegistrationFlowPassword",
-        }),
-      },
+          password: "RegistrationFlowPassword"
+        })
+      }
     );
 
     expect(createUserResponse.status).toBe(201);
@@ -43,7 +44,7 @@ describe("Use Case: Registration Flow (all successful)", () => {
       features: ["read:activation_token"],
       password: createUserResponseBody.password,
       created_at: createUserResponseBody.created_at,
-      updated_at: createUserResponseBody.updated_at,
+      updated_at: createUserResponseBody.updated_at
     });
   });
 
@@ -58,7 +59,7 @@ describe("Use Case: Registration Flow (all successful)", () => {
     activationTokenId = orchestrator.extractUUID(lastEmail.text);
 
     expect(lastEmail.text).toContain(
-      `${webserver.origin}/cadastro/ativar/${activationTokenId}`,
+      `${webserver.origin}/cadastro/ativar/${activationTokenId}`
     );
 
     const activationTokenObject =
@@ -72,8 +73,8 @@ describe("Use Case: Registration Flow (all successful)", () => {
     const activationResponse = await fetch(
       `http://localhost:3000/api/v1/activations/${activationTokenId}`,
       {
-        method: "PATCH",
-      },
+        method: "PATCH"
+      }
     );
 
     expect(activationResponse.status).toBe(200);
@@ -83,21 +84,26 @@ describe("Use Case: Registration Flow (all successful)", () => {
     expect(Date.parse(activationResponseBody.used)).not.toBeNaN();
 
     activatedUser = await user.findOneByUsername("RegistrationFlow");
-    expect(activatedUser.features).toEqual(["create:session", "read:session"]);
+    expect(activatedUser.features).toEqual([
+      "create:session",
+      "read:session",
+      "update:user"
+    ]);
   });
+
   test("Login", async () => {
     const createSessionResponse = await fetch(
       `http://localhost:3000/api/v1/sessions`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: "registration.flow@curso.dev",
-          password: "RegistrationFlowPassword",
-        }),
-      },
+          password: "RegistrationFlowPassword"
+        })
+      }
     );
 
     expect(createSessionResponse.status).toBe(201);
@@ -106,12 +112,13 @@ describe("Use Case: Registration Flow (all successful)", () => {
 
     expect(createSessionResponseBody.user_id).toBe(createUserResponseBody.id);
   });
+
   test("Get user information", async () => {
     const userResponse = await fetch("http://localhost:3000/api/v1/user", {
       method: "GET",
       headers: {
-        Cookie: `session_id=${createSessionResponseBody.token}`,
-      },
+        Cookie: `session_id=${createSessionResponseBody.token}`
+      }
     });
 
     expect(userResponse.status).toBe(200);
@@ -121,10 +128,10 @@ describe("Use Case: Registration Flow (all successful)", () => {
       id: activatedUser.id,
       username: "RegistrationFlow",
       email: "registration.flow@curso.dev",
-      features: ["create:session", "read:session"],
+      features: ["create:session", "read:session", "update:user"],
       password: activatedUser.password,
       created_at: activatedUser.created_at.toISOString(),
-      updated_at: activatedUser.updated_at.toISOString(),
+      updated_at: activatedUser.updated_at.toISOString()
     });
   });
 });
