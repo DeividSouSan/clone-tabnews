@@ -4,7 +4,7 @@ import {
   NotFoundError,
   UnauthorizedError,
   ValidationError,
-  ForbiddenError
+  ForbiddenError,
 } from "./errors/index.js";
 import * as cookie from "cookie";
 import session from "models/session.js";
@@ -32,7 +32,7 @@ function onErrorHandler(error, request, response) {
   }
 
   const publicErrorObject = new InternalServerError({
-    cause: error
+    cause: error,
   });
 
   console.error(publicErrorObject);
@@ -44,7 +44,7 @@ async function setCookie(sessionToken, response) {
     path: "/",
     maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
     secure: process.env.NODE_ENV === "production",
-    httpOnly: true
+    httpOnly: true,
   });
   response.setHeader("Set-Cookie", setCookie);
 }
@@ -54,7 +54,7 @@ async function clearSessionCookie(response) {
     path: "/",
     maxAge: 0,
     secure: process.env.NODE_ENV === "production",
-    httpOnly: true
+    httpOnly: true,
   });
   response.setHeader("Set-Cookie", setCookie);
 }
@@ -75,17 +75,17 @@ async function injectUser(request, response, next) {
 
     request.context = {
       ...request.context,
-      user: userObject
+      user: userObject,
     };
   }
 
   function injectAnonymousUser(request) {
     const anonymousUserObject = {
-      features: ["read:activation_token", "create:session", "create:user"]
+      features: ["read:activation_token", "create:session", "create:user"],
     };
     request.context = {
       ...request.context,
-      user: anonymousUserObject
+      user: anonymousUserObject,
     };
   }
 }
@@ -99,19 +99,19 @@ function checkUserFeature(feature) {
 
     throw new ForbiddenError({
       message: "Você não possui permissão para executar essa ação.",
-      action: `Verifique se o seu usuário possui a feature ${feature}.`
+      action: `Verifique se o seu usuário possui a feature ${feature}.`,
     });
   };
 }
 const controller = {
   errorHandlers: {
     onError: onErrorHandler,
-    onNoMatch: onNoMatchHandler
+    onNoMatch: onNoMatchHandler,
   },
   setCookie,
   clearSessionCookie,
   injectUser,
-  checkUserFeature
+  checkUserFeature,
 };
 
 export default controller;
