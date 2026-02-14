@@ -16,7 +16,7 @@ async function waitForAllServices() {
   async function waitForWebServer() {
     return retry(fetchStatusPage, {
       retries: 100,
-      maxTimeout: 1000,
+      maxTimeout: 1000
     });
 
     async function fetchStatusPage() {
@@ -30,7 +30,7 @@ async function waitForAllServices() {
   async function waitForEmailServer() {
     return retry(fetchEmailPage, {
       retries: 100,
-      maxTimeout: 1000,
+      maxTimeout: 1000
     });
 
     async function fetchEmailPage() {
@@ -56,7 +56,7 @@ async function createUser(userObject) {
     username:
       userObject?.username || faker.internet.username().replace(/[_.-]/g, ""),
     email: userObject?.email || faker.internet.email(),
-    password: userObject?.password || "validpassword",
+    password: userObject?.password || "validpassword"
   });
 }
 
@@ -72,8 +72,8 @@ async function deleteEmails() {
   await fetch(emailHttpUrl, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
-    },
+      "Content-Type": "application/json"
+    }
   });
 }
 
@@ -89,6 +89,7 @@ function extractUUID(text) {
 
   return UUID;
 }
+
 async function getLastEmail() {
   const emailListResponse = await fetch(emailHttpUrl);
   const emailListBody = await emailListResponse.json();
@@ -97,7 +98,7 @@ async function getLastEmail() {
   if (!lastEmailItem) return;
 
   const emailTextResponse = await fetch(
-    `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}/messages/${lastEmailItem.id}.plain`,
+    `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}/messages/${lastEmailItem.id}.plain`
   );
 
   lastEmailItem.text = await emailTextResponse.text();
@@ -112,8 +113,13 @@ async function createUserWithSession(userObject) {
 
   return {
     ...createdUser,
-    token: session.token,
+    token: session.token
   };
+}
+
+async function addFeaturesToUser(userObject, features) {
+  const updatedUser = await user.addFeatures(userObject.id, features);
+  return updatedUser;
 }
 
 const orchestrator = {
@@ -128,6 +134,7 @@ const orchestrator = {
   activateUser,
   createUUID,
   createUserWithSession,
+  addFeaturesToUser
 };
 
 export default orchestrator;

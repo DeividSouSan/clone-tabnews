@@ -5,14 +5,15 @@ function check(user, feature, resource) {
   if (!user.features.includes(feature)) return UNAUTHORIZED;
 
   if (feature === "update:user" && resource) {
-    if (user.id !== resource.id) return UNAUTHORIZED;
+    if (user.id !== resource.id)
+      if (!check(user, "update:user:others")) return UNAUTHORIZED;
   }
 
   return AUTHORIZED;
 }
 
 const authorization = {
-  check,
+  check
 };
 
 export default authorization;
