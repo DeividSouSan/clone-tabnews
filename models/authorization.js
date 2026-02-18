@@ -68,7 +68,13 @@ function filterOutput(user, feature, originalData) {
   }
 
   if (feature === "read:migrations") {
-    return originalData;
+    return originalData.map((migration) => {
+      return {
+        path: migration.path,
+        name: migration.name,
+        timestamp: migration.timestamp
+      };
+    });
   }
 
   if (feature.includes("read:status")) {

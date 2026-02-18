@@ -44,6 +44,12 @@ describe("GET to /api/v1/migrations", () => {
 
       expect(Array.isArray(responseBody)).toBe(true);
       expect(responseBody.length).toBeGreaterThan(0);
+
+      responseBody.forEach((migration) => {
+        expect(migration.path).toBeDefined();
+        expect(migration.name).toBeDefined();
+        expect(migration.timestamp).toBeDefined();
+      });
     });
   });
 });
