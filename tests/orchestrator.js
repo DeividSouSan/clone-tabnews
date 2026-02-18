@@ -51,6 +51,10 @@ async function runPendingMigrations() {
   await migrator.runPendingMigrations();
 }
 
+async function runPendingMigrationByName(filename) {
+  await migrator.runPendingMigrationByName(filename);
+}
+
 async function createUser(userObject) {
   return await user.create({
     username:
@@ -134,7 +138,8 @@ const orchestrator = {
   activateUser,
   createUUID,
   createUserWithSession,
-  addFeaturesToUser
+  addFeaturesToUser,
+  runPendingMigrationByName
 };
 
 export default orchestrator;

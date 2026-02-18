@@ -16,27 +16,35 @@ export default router.handler(controller.errorHandlers);
 async function postHandler(request, response) {
   const inputData = request.body;
 
-  const authenticatedUser = await authentication.execute(
+  const userAuthenticated = await authentication.execute(
     inputData.email,
-    inputData.password,
+    inputData.password
   );
 
-  const isAuthorized = authorization.check(authenticatedUser, "create:session");
+  const isAuthorized = authorization.check(userAuthenticated, "create:session");
 
   if (!isAuthorized) {
     throw new ForbiddenError({
       message: "Você não possui permissão para fazer login.",
-      action: "Contate o suporte caso acredito que isso seja um erro.",
+      action: "Contate o suporte caso acredito que isso seja um erro."
     });
   }
 
-  const newSession = await session.create(authenticatedUser.id);
+  const newSession = await session.create(userAuthenticated.id);
 
   controller.setCookie(newSession.token, response);
-  return response.status(201).json(newSession);
+
+  const secureOutputValues = authorization.filterOutput(
+    userAuthenticated,
+    "read:session",
+    newSession
+  );
+
+  return response.status(201).json(secureOutputValues);
 }
 
 async function deleteHandler(request, response) {
+  const userTrigger = request.context.user;
   const sessionToken = request.cookies.session_id;
 
   const currentSession = await session.findOneValidByToken(sessionToken);
@@ -44,5 +52,11 @@ async function deleteHandler(request, response) {
 
   controller.clearSessionCookie(response);
 
-  return response.status(200).json(expiredSession);
+  const secureOutputValues = authorization.filterOutput(
+    userTrigger,
+    "read:session",
+    expiredSession
+  );
+
+  return response.status(200).json(secureOutputValues);
 }

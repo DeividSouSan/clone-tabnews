@@ -18,13 +18,13 @@ async function findOneByUsername(username) {
           LIMIT
             1
           ;`,
-      values: [username]
+      values: [username],
     });
 
     if (results.rowCount === 0) {
       throw new NotFoundError({
         message: "O nome de usuário fornecido não foi encontrado no sistema.",
-        action: "Verifique se o nome de usuário foi digitado corretamente."
+        action: "Verifique se o nome de usuário foi digitado corretamente.",
       });
     }
 
@@ -48,13 +48,13 @@ async function findOneByEmail(email) {
           LIMIT
             1
           ;`,
-      values: [email]
+      values: [email],
     });
 
     if (results.rowCount === 0) {
       throw new NotFoundError({
         message: "O nome de usuário fornecido não foi encontrado no sistema.",
-        action: "Verifique se o nome de usuário foi digitado corretamente."
+        action: "Verifique se o nome de usuário foi digitado corretamente.",
       });
     }
 
@@ -78,13 +78,13 @@ async function findOneById(id) {
           LIMIT
             1
           ;`,
-      values: [id]
+      values: [id],
     });
 
     if (results.rowCount === 0) {
       throw new NotFoundError({
         message: "O id fornecido não foi encontrado no sistema.",
-        action: "Verifique se o id foi digitado corretamente."
+        action: "Verifique se o id foi digitado corretamente.",
       });
     }
 
@@ -116,7 +116,7 @@ async function create(userData) {
           RETURNING
             *
           ;`,
-      values: [username, email, password, features]
+      values: [username, email, password, features],
     });
 
     return results.rows[0];
@@ -144,7 +144,7 @@ async function setFeatures(userId, features) {
       RETURNING 
       *
     ;`,
-      values: [userId, features]
+      values: [userId, features],
     });
 
     return results.rows[0];
@@ -168,7 +168,7 @@ async function addFeatures(userId, features) {
       RETURNING 
       *
     ;`,
-      values: [userId, features]
+      values: [userId, features],
     });
 
     return results.rows[0];
@@ -217,8 +217,8 @@ async function update(username, newUserData) {
         patchedUser.id,
         patchedUser.username,
         patchedUser.email,
-        patchedUser.password
-      ]
+        patchedUser.password,
+      ],
     });
 
     return results.rows[0];
@@ -235,12 +235,12 @@ async function validateUniqueUsername(username) {
           WHERE
             LOWER(username) = LOWER($1)
           ;`,
-    values: [username]
+    values: [username],
   });
   if (results.rowCount > 0) {
     throw new ValidationError({
       message: "O nome de usuário fornercido já está sendo utilizado",
-      action: "Utilize outro nome de usuário para realizar esta operação"
+      action: "Utilize outro nome de usuário para realizar esta operação",
     });
   }
 }
@@ -255,12 +255,12 @@ async function validateUniqueEmail(userEmail) {
           WHERE
             LOWER(email) = LOWER($1)
           ;`,
-    values: [userEmail]
+    values: [userEmail],
   });
   if (results.rowCount > 0) {
     throw new ValidationError({
       message: "O email fornercido já está sendo utilizado",
-      action: "Utilize outro email para realizar esta operação"
+      action: "Utilize outro email para realizar esta operação",
     });
   }
 }
@@ -278,7 +278,7 @@ const user = {
   findOneById,
   setFeatures,
   update,
-  addFeatures
+  addFeatures,
 };
 
 export default user;

@@ -7,7 +7,6 @@ async function fetchAPI(key) {
 }
 
 export default function StatusPage() {
-  console.log(fetchAPI("/api/v1/status"));
   return (
     <>
       <h1>Status</h1>
@@ -19,7 +18,7 @@ export default function StatusPage() {
 
 function UpdatedAt() {
   const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
-    refreshInterval: 2000,
+    refreshInterval: 2000
   });
 
   let updateAtText = "Carregando";
@@ -33,7 +32,7 @@ function UpdatedAt() {
 
 function DatabaseInfo() {
   const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
-    refreshInterval: 2000,
+    refreshInterval: 2000
   });
 
   let maxConnectionsText = "Carregando";
