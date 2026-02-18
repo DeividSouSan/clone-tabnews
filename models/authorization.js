@@ -70,6 +70,37 @@ function filterOutput(user, feature, originalData) {
   if (feature === "read:migrations") {
     return originalData;
   }
+
+  if (feature.includes("read:status")) {
+    if (user.features.includes("read:status:sensitive")) {
+      return {
+        updated_at: originalData.updated_at,
+        dependencies: {
+          database: {
+            version: originalData.dependencies.database.version,
+            opened_connections:
+              originalData.dependencies.database.opened_connections,
+            max_connections: parseInt(
+              originalData.dependencies.database.max_connections
+            )
+          }
+        }
+      };
+    }
+
+    return {
+      updated_at: originalData.updated_at,
+      dependencies: {
+        database: {
+          opened_connections:
+            originalData.dependencies.database.opened_connections,
+          max_connections: parseInt(
+            originalData.dependencies.database.max_connections
+          )
+        }
+      }
+    };
+  }
 }
 
 const authorization = {
