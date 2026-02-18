@@ -78,23 +78,7 @@ function filterOutput(user, feature, originalData) {
   }
 
   if (feature.includes("read:status")) {
-    if (user.features.includes("read:status:sensitive")) {
-      return {
-        updated_at: originalData.updated_at,
-        dependencies: {
-          database: {
-            version: originalData.dependencies.database.version,
-            opened_connections:
-              originalData.dependencies.database.opened_connections,
-            max_connections: parseInt(
-              originalData.dependencies.database.max_connections
-            )
-          }
-        }
-      };
-    }
-
-    return {
+    const output = {
       updated_at: originalData.updated_at,
       dependencies: {
         database: {
@@ -106,6 +90,14 @@ function filterOutput(user, feature, originalData) {
         }
       }
     };
+
+    if (check(user, "read:status:sensitive")) {
+      output.dependencies.database.version =
+        originalData.dependencies.database.version;
+      return output;
+    }
+
+    return output;
   }
 }
 
