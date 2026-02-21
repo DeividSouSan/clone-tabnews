@@ -1,4 +1,35 @@
+import { InternalServerError } from "infra/errors";
+
+const availableFeatures = [
+  // USER
+  "create:user",
+  "read:user",
+  "read:user:self",
+  "update:user",
+  "update:user:others",
+
+  // SESSION
+  "create:session",
+  "read:session",
+
+  // ACTIVATION
+  "read:activation_token",
+
+  // MIGRATIONS
+  "read:migrations",
+  "run:migrations",
+
+  // STATUS
+  "read:status",
+  "read:status:sensitive"
+];
+
+// main functions
+
 function check(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
+
   const UNAUTHORIZED = false;
   const AUTHORIZED = true;
 
@@ -13,6 +44,10 @@ function check(user, feature, resource) {
 }
 
 function filterOutput(user, feature, originalData) {
+  validateUser(user);
+  validateFeature(feature);
+  validateOriginalData(originalData);
+
   if (feature === "read:user") {
     return {
       id: originalData.id,
@@ -98,6 +133,32 @@ function filterOutput(user, feature, originalData) {
     }
 
     return output;
+  }
+}
+
+// validation functions
+function validateFeature(feature) {
+  if (!feature || !availableFeatures.includes(feature)) {
+    throw new InternalServerError({
+      cause:
+        "É necessário fornecer uma feature conhecida no model `authorization`."
+    });
+  }
+}
+
+function validateUser(user) {
+  if (!user || !user.features) {
+    throw new InternalServerError({
+      cause: "É necessário fornecer `user` no model `authorization`."
+    });
+  }
+}
+
+function validateOriginalData(originalData) {
+  if (!originalData) {
+    throw new InternalServerError({
+      cause: "É necessário fornecer `originalData` no model `authorization`."
+    });
   }
 }
 
