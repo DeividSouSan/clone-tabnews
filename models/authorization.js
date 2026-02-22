@@ -21,7 +21,7 @@ const availableFeatures = [
 
   // STATUS
   "read:status",
-  "read:status:sensitive"
+  "read:status:sensitive",
 ];
 
 // main functions
@@ -54,7 +54,7 @@ function filterOutput(user, feature, originalData) {
       username: originalData.username,
       features: originalData.features,
       created_at: originalData.created_at,
-      updated_at: originalData.updated_at
+      updated_at: originalData.updated_at,
     };
   }
 
@@ -65,7 +65,7 @@ function filterOutput(user, feature, originalData) {
       username: originalData.username,
       features: originalData.features,
       created_at: originalData.created_at,
-      updated_at: originalData.updated_at
+      updated_at: originalData.updated_at,
     };
   }
 
@@ -76,7 +76,7 @@ function filterOutput(user, feature, originalData) {
       token: originalData.token,
       created_at: originalData.created_at,
       expires_at: originalData.expires_at,
-      updated_at: originalData.updated_at
+      updated_at: originalData.updated_at,
     };
   }
 
@@ -87,7 +87,7 @@ function filterOutput(user, feature, originalData) {
       token: originalData.token,
       expires_at: originalData.expires_at,
       created_at: originalData.created_at,
-      updated_at: originalData.updated_at
+      updated_at: originalData.updated_at,
     };
   }
 
@@ -98,7 +98,7 @@ function filterOutput(user, feature, originalData) {
       user_id: originalData.user_id,
       created_at: originalData.created_at.toISOString(),
       expires_at: originalData.expires_at.toISOString(),
-      updated_at: originalData.updated_at
+      updated_at: originalData.updated_at,
     };
   }
 
@@ -107,7 +107,7 @@ function filterOutput(user, feature, originalData) {
       return {
         path: migration.path,
         name: migration.name,
-        timestamp: migration.timestamp
+        timestamp: migration.timestamp,
       };
     });
   }
@@ -120,10 +120,10 @@ function filterOutput(user, feature, originalData) {
           opened_connections:
             originalData.dependencies.database.opened_connections,
           max_connections: parseInt(
-            originalData.dependencies.database.max_connections
-          )
-        }
-      }
+            originalData.dependencies.database.max_connections,
+          ),
+        },
+      },
     };
 
     if (check(user, "read:status:sensitive")) {
@@ -141,7 +141,7 @@ function validateFeature(feature) {
   if (!feature || !availableFeatures.includes(feature)) {
     throw new InternalServerError({
       cause:
-        "É necessário fornecer uma feature conhecida no model `authorization`."
+        "É necessário fornecer uma feature conhecida no model `authorization`.",
     });
   }
 }
@@ -149,7 +149,7 @@ function validateFeature(feature) {
 function validateUser(user) {
   if (!user || !user.features) {
     throw new InternalServerError({
-      cause: "É necessário fornecer `user` no model `authorization`."
+      cause: "É necessário fornecer `user` no model `authorization`.",
     });
   }
 }
@@ -157,14 +157,14 @@ function validateUser(user) {
 function validateOriginalData(originalData) {
   if (!originalData) {
     throw new InternalServerError({
-      cause: "É necessário fornecer `originalData` no model `authorization`."
+      cause: "É necessário fornecer `originalData` no model `authorization`.",
     });
   }
 }
 
 const authorization = {
   check,
-  filterOutput
+  filterOutput,
 };
 
 export default authorization;

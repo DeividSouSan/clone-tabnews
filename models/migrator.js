@@ -7,7 +7,7 @@ const deafultMigrationOptions = {
   dryRun: true,
   direction: "up",
   log: () => {},
-  migrationsTable: "pgmigrations"
+  migrationsTable: "pgmigrations",
 };
 
 async function listPendingMigrations() {
@@ -17,7 +17,7 @@ async function listPendingMigrations() {
 
     const pendingMigrations = await migrationRunner({
       ...deafultMigrationOptions,
-      dbClient: dbClient
+      dbClient: dbClient,
     });
     return pendingMigrations;
   } finally {
@@ -33,7 +33,7 @@ async function runPendingMigrations() {
     const migratedMigrations = await migrationRunner({
       ...deafultMigrationOptions,
       dbClient: dbClient,
-      dryRun: false
+      dryRun: false,
     });
 
     return migratedMigrations;
@@ -51,7 +51,7 @@ async function runPendingMigrationByName(filename) {
       ...deafultMigrationOptions,
       dbClient: dbClient,
       dryRun: false,
-      file: filename
+      file: filename,
     });
 
     return migratedMigrations;
@@ -62,7 +62,7 @@ async function runPendingMigrationByName(filename) {
 const migrator = {
   listPendingMigrations,
   runPendingMigrations,
-  runPendingMigrationByName
+  runPendingMigrationByName,
 };
 
 export default migrator;

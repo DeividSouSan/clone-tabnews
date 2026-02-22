@@ -28,8 +28,8 @@ describe("GET to /api/v1/status", () => {
 
       const response = await fetch("http://localhost:3000/api/v1/status", {
         headers: {
-          Cookie: `session_id=${user.token}`
-        }
+          Cookie: `session_id=${user.token}`,
+        },
       });
 
       expect(response.status).toBe(200);
