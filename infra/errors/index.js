@@ -1,7 +1,7 @@
 export class InternalServerError extends Error {
   constructor({ cause, statusCode }) {
     super("Um erro interno não esperado aconteceu.", {
-      cause,
+      cause
     });
 
     this.name = "InternalServerError";
@@ -14,7 +14,7 @@ export class InternalServerError extends Error {
       name: this.name,
       message: this.message,
       action: this.action,
-      status_code: this.statusCode,
+      status_code: this.statusCode
     };
   }
 }
@@ -33,20 +33,22 @@ export class MethodNotAllowedError extends Error {
       name: this.name,
       message: this.message,
       action: this.action,
-      status_code: this.statusCode,
+      status_code: this.statusCode
     };
   }
 }
 
 export class ServiceError extends Error {
-  constructor({ cause, message }) {
+  constructor({ cause, action, message, context }) {
     super(message || "Serviço indisponínvel no momento.", {
       cause,
+      action
     });
 
     this.name = "ServiceError";
-    this.action = "Verifique se o serviço está disponível.";
+    this.action = action || "Verifique se o serviço está disponível.";
     this.statusCode = 503;
+    this.context = context;
   }
 
   toJSON() {
@@ -55,6 +57,7 @@ export class ServiceError extends Error {
       message: this.message,
       action: this.action,
       status_code: this.statusCode,
+      context: this.context
     };
   }
 }
@@ -62,7 +65,7 @@ export class ServiceError extends Error {
 export class ValidationError extends Error {
   constructor({ cause, action, message }) {
     super(message || "Um erro de validação ocorreu.", {
-      cause,
+      cause
     });
 
     this.name = "ValidationError";
@@ -75,7 +78,7 @@ export class ValidationError extends Error {
       name: this.name,
       message: this.message,
       action: this.action,
-      status_code: this.statusCode,
+      status_code: this.statusCode
     };
   }
 }
@@ -83,7 +86,7 @@ export class ValidationError extends Error {
 export class NotFoundError extends Error {
   constructor({ cause, action, message }) {
     super(message || "Recurso não encontrado no sistema.", {
-      cause,
+      cause
     });
 
     this.name = "NotFoundError";
@@ -97,7 +100,7 @@ export class NotFoundError extends Error {
       name: this.name,
       message: this.message,
       action: this.action,
-      status_code: this.statusCode,
+      status_code: this.statusCode
     };
   }
 }
@@ -105,7 +108,7 @@ export class NotFoundError extends Error {
 export class UnauthorizedError extends Error {
   constructor({ cause, action, message }) {
     super(message || "Usuário não autenticado.", {
-      cause,
+      cause
     });
 
     this.name = "UnauthorizedError";
@@ -118,7 +121,7 @@ export class UnauthorizedError extends Error {
       name: this.name,
       message: this.message,
       action: this.action,
-      status_code: this.statusCode,
+      status_code: this.statusCode
     };
   }
 }
@@ -126,7 +129,7 @@ export class UnauthorizedError extends Error {
 export class ForbiddenError extends Error {
   constructor({ cause, action, message }) {
     super(message || "Acesso negado.", {
-      cause,
+      cause
     });
 
     this.name = "ForbiddenError";
@@ -140,7 +143,7 @@ export class ForbiddenError extends Error {
       name: this.name,
       message: this.message,
       action: this.action,
-      status_code: this.statusCode,
+      status_code: this.statusCode
     };
   }
 }
