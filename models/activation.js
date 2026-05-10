@@ -16,14 +16,14 @@ async function activateUserById(userId) {
   if (!isAuthorized) {
     throw new ForbiddenError({
       message: "Você não pode mais utilizar tokens de ativação.",
-      action: "Entre em contato com o suporte.",
+      action: "Entre em contato com o suporte."
     });
   }
 
   const activatedUser = await user.setFeatures(userId, [
     "create:session",
     "read:session",
-    "update:user",
+    "update:user"
   ]);
   return activatedUser;
 }
@@ -45,7 +45,7 @@ async function createToken(userId) {
           *
       ;`,
 
-      values: [userId, expiresAt],
+      values: [userId, expiresAt]
     });
     return results.rows[0];
   }
@@ -69,14 +69,14 @@ async function findTokenById(tokenId) {
         LIMIT
           1
       ;`,
-      values: [tokenId],
+      values: [tokenId]
     });
 
     if (results.rowCount === 0) {
       throw new NotFoundError({
         message:
           "O token de ativação utilizado não foi encontrado no sistema ou expirou.",
-        action: "Faça um novo cadastro.",
+        action: "Faça um novo cadastro."
       });
     }
     return results.rows[0];
@@ -100,7 +100,7 @@ async function markTokenAsUsed(tokenId) {
         RETURNING
           *
       `,
-      values: [tokenId],
+      values: [tokenId]
     });
 
     return results.rows[0];
@@ -108,6 +108,7 @@ async function markTokenAsUsed(tokenId) {
 }
 async function sendEmailToUser(user, token) {
   await email.send({
+    from: "Deivid Santana <contato@alerts.deividsantana.com.br",
     to: user.email,
     subject: "Ative sua conta no FinTab!",
     text: dedent`${user.username}, clique no link abaixo para ativar seu email!
@@ -116,7 +117,7 @@ async function sendEmailToUser(user, token) {
 
     Atenciosamente,
     Equipe FinTab
-    `,
+    `
   });
 }
 
@@ -126,7 +127,7 @@ const activation = {
   findTokenById,
   markTokenAsUsed,
   sendEmailToUser,
-  EXPIRATION_IN_MILLISECONDS,
+  EXPIRATION_IN_MILLISECONDS
 };
 
 export default activation;
