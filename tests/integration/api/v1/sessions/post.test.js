@@ -3,6 +3,8 @@ import { version as uuidVersion } from "uuid";
 import session from "models/session.js";
 import setCookieParser from "set-cookie-parser";
 
+// Nunca executamos a regra de uma model nos testes, usamos o orchestrator para isso.
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
@@ -101,6 +103,8 @@ describe("POST /api/v1/sessions", () => {
         password: "sessao.senha.correta",
       });
 
+      await orchestrator.activateUser(createdUser);
+
       const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "POST",
         headers: {
@@ -118,11 +122,11 @@ describe("POST /api/v1/sessions", () => {
 
       expect(responseBody).toEqual({
         id: responseBody.id,
+        user_id: createdUser.id,
+        token: responseBody.token,
         created_at: responseBody.created_at,
         expires_at: responseBody.expires_at,
         updated_at: responseBody.updated_at,
-        token: responseBody.token,
-        user_id: createdUser.id,
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);

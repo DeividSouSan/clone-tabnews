@@ -42,9 +42,27 @@ async function runPendingMigrations() {
   }
 }
 
+async function runPendingMigrationByName(filename) {
+  let dbClient;
+  try {
+    dbClient = await database.getNewClient();
+
+    const migratedMigrations = await migrationRunner({
+      ...deafultMigrationOptions,
+      dbClient: dbClient,
+      dryRun: false,
+      file: filename,
+    });
+
+    return migratedMigrations;
+  } finally {
+    await dbClient?.end();
+  }
+}
 const migrator = {
   listPendingMigrations,
   runPendingMigrations,
+  runPendingMigrationByName,
 };
 
 export default migrator;

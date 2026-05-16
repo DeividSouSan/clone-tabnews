@@ -9,7 +9,7 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("GET /api/v1/user", () => {
+describe("DELETE /api/v1/user", () => {
   describe("Authenticated user", () => {
     test("With non-existent session", async () => {
       const nonexistentToken =

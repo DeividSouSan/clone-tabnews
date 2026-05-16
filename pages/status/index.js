@@ -7,7 +7,6 @@ async function fetchAPI(key) {
 }
 
 export default function StatusPage() {
-  console.log(fetchAPI("/api/v1/status"));
   return (
     <>
       <h1>Status</h1>

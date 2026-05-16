@@ -1,14 +1,18 @@
 import { createRouter } from "next-connect";
 import database from "infra/database.js";
 import controller from "infra/handlers.js";
+import authorization from "models/authorization";
 
 const router = createRouter();
 
+router.use(controller.injectUser);
 router.get(getHandler);
 
 export default router.handler(controller.errorHandlers);
 
 async function getHandler(request, response) {
+  const userTrigger = request.context.user;
+
   const updatedAt = new Date().toISOString();
 
   const databaseVersionResult = await database
@@ -26,14 +30,22 @@ async function getHandler(request, response) {
     })
     .then((query) => query.rows[0].active_connections);
 
-  response.status(200).json({
+  let output = {
     updated_at: updatedAt,
     dependencies: {
       database: {
         version: databaseVersionResult,
-        max_connections: parseInt(databaseMaxConnectionsResult),
         opened_connections: databaseOpenedConnectionsResult,
+        max_connections: parseInt(databaseMaxConnectionsResult),
       },
     },
-  });
+  };
+
+  const secureOutputValues = authorization.filterOutput(
+    userTrigger,
+    "read:status",
+    output,
+  );
+
+  return response.status(200).json(secureOutputValues);
 }
