@@ -2,6 +2,7 @@ import orchestrator from "tests/orchestrator.js";
 import { version as uuidVersion } from "uuid";
 import password from "models/password.js";
 import user from "models/user.js";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -15,7 +16,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       const user1 = await orchestrator.createUser();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${user1.username}`,
+        `${webserver.origin}/api/v1/users/${user1.username}`,
         {
           method: "PATCH",
           headers: {
@@ -45,7 +46,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       const user = await orchestrator.createUserWithSession();
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/UsuarioInexistente",
+        `${webserver.origin}/api/v1/users/UsuarioInexistente`,
         {
           method: "PATCH",
           headers: {
@@ -80,7 +81,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/usernamevalido",
+        `${webserver.origin}/api/v1/users/usernamevalido`,
         {
           method: "PATCH",
           headers: {
@@ -114,7 +115,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         username: "User2"
       });
 
-      const response = await fetch("http://localhost:3000/api/v1/users/user2", {
+      const response = await fetch(`${webserver.origin}/api/v1/users/user2`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -148,7 +149,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/" + user1.username,
+        `${webserver.origin}/api/v1/users/` + user1.username,
         {
           method: "PATCH",
           headers: {
@@ -179,7 +180,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${user1.username}`,
+        `${webserver.origin}/api/v1/users/${user1.username}`,
         {
           method: "PATCH",
           headers: {
@@ -214,7 +215,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       const user1 = await orchestrator.createUserWithSession();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${user1.username}`,
+        `${webserver.origin}/api/v1/users/${user1.username}`,
         {
           method: "PATCH",
           headers: {
@@ -249,7 +250,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       const user1 = await orchestrator.createUserWithSession();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${user1.username}`,
+        `${webserver.origin}/api/v1/users/${user1.username}`,
         {
           method: "PATCH",
           headers: {
@@ -286,7 +287,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${user1.username}`,
+        `${webserver.origin}/api/v1/users/${user1.username}`,
         {
           method: "PATCH",
           headers: {
@@ -343,7 +344,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       const defaultUser = await orchestrator.createUser();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${defaultUser.username}`,
+        `${webserver.origin}/api/v1/users/${defaultUser.username}`,
         {
           method: "PATCH",
           headers: {
@@ -375,7 +376,7 @@ describe("PATCH /api/v1/users/[username]", () => {
   });
 
   afterEach(async () => {
-    const response = await fetch("http://localhost:3000/api/v1/status");
+    const response = await fetch(`${webserver.origin}/api/v1/status`);
     const responseBody = await response.json();
     if (responseBody.dependencies.database.opened_connections !== 1) {
       throw new Error(

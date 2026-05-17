@@ -1,19 +1,20 @@
 import orchestrator from "tests/orchestrator";
 
+import webserver from "infra/webserver";
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
   await orchestrator.runPendingMigrationByName("1752772646510_create-users");
   await orchestrator.runPendingMigrationByName("1754759624163_create-sessions");
   await orchestrator.runPendingMigrationByName(
-    "1765132073864_add-features-to-users",
+    "1765132073864_add-features-to-users"
   );
 });
 
 describe("GET to /api/v1/migrations", () => {
   describe("Anonymous user", () => {
     test("Retrieving pending migrations", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/migrations");
+      const response = await fetch(`${webserver.origin}/api/v1/migrations`);
       expect(response.status).toBe(403);
 
       const responseBody = await response.json();
@@ -22,7 +23,7 @@ describe("GET to /api/v1/migrations", () => {
         name: "ForbiddenError",
         message: "Você não possui permissão para executar essa ação.",
         action: `Verifique se o seu usuário possui a feature read:migrations.`,
-        status_code: 403,
+        status_code: 403
       });
     });
   });
@@ -32,10 +33,10 @@ describe("GET to /api/v1/migrations", () => {
       const user = await orchestrator.createUserWithSession();
       await orchestrator.addFeaturesToUser(user, ["read:migrations"]);
 
-      const response = await fetch("http://localhost:3000/api/v1/migrations", {
+      const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         headers: {
-          Cookie: `session_id=${user.token}`,
-        },
+          Cookie: `session_id=${user.token}`
+        }
       });
 
       expect(response.status).toBe(200);
@@ -55,11 +56,11 @@ describe("GET to /api/v1/migrations", () => {
 });
 
 afterEach(async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
+  const response = await fetch(`${webserver.origin}/api/v1/status`);
   const responseBody = await response.json();
   if (responseBody.dependencies.database.opened_connections !== 1) {
     throw new Error(
-      "Conexões que foram abertas não foram fechadas adequadamente.",
+      "Conexões que foram abertas não foram fechadas adequadamente."
     );
   }
 });

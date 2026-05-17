@@ -3,6 +3,7 @@ import orchestrator from "tests/orchestrator.js";
 import { version as uuidVersion } from "uuid";
 import setCookieParser from "set-cookie-parser";
 
+import webserver from "infra/webserver";
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
@@ -15,11 +16,11 @@ describe("DELETE /api/v1/user", () => {
       const nonexistentToken =
         "6279f7f492ccc1726d468044c02641e0970bb50a1ff128f1d263895c986e987c2152ce5e20b2824ec924f6e2fcc156a2";
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
-          Cookie: "session_id=" + nonexistentToken,
-        },
+          Cookie: "session_id=" + nonexistentToken
+        }
       });
 
       expect(response.status).toBe(401);
@@ -30,13 +31,13 @@ describe("DELETE /api/v1/user", () => {
         name: "UnauthorizedError",
         message: "Usuário não possui sessão ativa.",
         action: "Verifique se este usuário está logado e tente novamente.",
-        status_code: 401,
+        status_code: 401
       });
     });
 
     test("With expired session", async () => {
       jest.useFakeTimers({
-        now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS),
+        now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS)
       });
 
       const createdUser = await orchestrator.createUser();
@@ -44,11 +45,11 @@ describe("DELETE /api/v1/user", () => {
 
       jest.useRealTimers();
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
-          Cookie: "session_id=" + sessionObject.token,
-        },
+          Cookie: "session_id=" + sessionObject.token
+        }
       });
 
       expect(response.status).toBe(401);
@@ -59,7 +60,7 @@ describe("DELETE /api/v1/user", () => {
         name: "UnauthorizedError",
         message: "Usuário não possui sessão ativa.",
         action: "Verifique se este usuário está logado e tente novamente.",
-        status_code: 401,
+        status_code: 401
       });
     });
 
@@ -68,11 +69,11 @@ describe("DELETE /api/v1/user", () => {
 
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
-          Cookie: "session_id=" + sessionObject.token,
-        },
+          Cookie: "session_id=" + sessionObject.token
+        }
       });
 
       expect(response.status).toBe(200);
@@ -85,7 +86,7 @@ describe("DELETE /api/v1/user", () => {
         user_id: sessionObject.user_id,
         expires_at: responseBody.expires_at,
         created_at: responseBody.created_at,
-        updated_at: responseBody.updated_at,
+        updated_at: responseBody.updated_at
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -93,16 +94,16 @@ describe("DELETE /api/v1/user", () => {
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
 
       expect(
-        responseBody.expires_at < sessionObject.expires_at.toISOString(),
+        responseBody.expires_at < sessionObject.expires_at.toISOString()
       ).toBe(true);
 
       expect(
-        responseBody.updated_at > sessionObject.updated_at.toISOString(),
+        responseBody.updated_at > sessionObject.updated_at.toISOString()
       ).toBe(true);
 
       // set-cookie assertions
       const parsedSetCookie = setCookieParser(response, {
-        map: true,
+        map: true
       });
 
       expect(parsedSetCookie.session_id).toEqual({
@@ -110,18 +111,18 @@ describe("DELETE /api/v1/user", () => {
         value: "",
         maxAge: 0,
         path: "/",
-        httpOnly: true,
+        httpOnly: true
       });
 
       // double-check assertions
 
       const doubleCheckResponse = await fetch(
-        "http://localhost:3000/api/v1/user",
+        `${webserver.origin}/api/v1/user`,
         {
           headers: {
-            Cookie: "session_id=" + sessionObject.token,
-          },
-        },
+            Cookie: "session_id=" + sessionObject.token
+          }
+        }
       );
 
       expect(doubleCheckResponse.status).toBe(401);
@@ -130,17 +131,17 @@ describe("DELETE /api/v1/user", () => {
         name: "UnauthorizedError",
         message: "Usuário não possui sessão ativa.",
         action: "Verifique se este usuário está logado e tente novamente.",
-        status_code: 401,
+        status_code: 401
       });
     });
   });
 
   afterEach(async () => {
-    const response = await fetch("http://localhost:3000/api/v1/status");
+    const response = await fetch(`${webserver.origin}/api/v1/status`);
     const responseBody = await response.json();
     if (responseBody.dependencies.database.opened_connections !== 1) {
       throw new Error(
-        "Conexões que foram abertas não foram fechadas adequadamente.",
+        "Conexões que foram abertas não foram fechadas adequadamente."
       );
     }
   });
