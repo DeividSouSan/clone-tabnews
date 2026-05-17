@@ -6,7 +6,7 @@ beforeAll(async () => {
 
 describe("GET to /api/v1/status", () => {
   describe("Anonymous user", () => {
-    test("Retriving current system status", async () => {
+    test("Retrieving current system status", async () => {
       const response = await fetch("http://localhost:3000/api/v1/status");
       expect(response.status).toBe(200);
 
@@ -22,14 +22,14 @@ describe("GET to /api/v1/status", () => {
   });
 
   describe("Privileged user", () => {
-    test("Retriving current system status", async () => {
+    test("Retrieving current system status", async () => {
       const user = await orchestrator.createUserWithSession();
       await orchestrator.addFeaturesToUser(user, ["read:status:sensitive"]);
 
       const response = await fetch("http://localhost:3000/api/v1/status", {
         headers: {
-          Cookie: `session_id=${user.token}`,
-        },
+          Cookie: `session_id=${user.token}`
+        }
       });
 
       expect(response.status).toBe(200);

@@ -3,33 +3,33 @@ import authorization from "models/authorization";
 
 describe("models/authorization.js", () => {
   describe(".can()", () => {
-    test("throws when without `user`", () => {
+    test("Throws when without `user`", () => {
       expect(() => {
         authorization.check();
       }).toThrow(InternalServerError);
     });
 
-    test("throws when without `user.features`", () => {
+    test("Throws when without `user.features`", () => {
       const createdUser = {
-        username: "newUser",
+        username: "newUser"
       };
       expect(() => {
         authorization.check(createdUser);
       }).toThrow(InternalServerError);
     });
 
-    test("throws when with unknown `feature`", () => {
+    test("Throws when with unknown `feature`", () => {
       const createdUser = {
-        features: [],
+        features: []
       };
       expect(() => {
         authorization.check(createdUser, "unknown:feature");
       }).toThrow(InternalServerError);
     });
 
-    test("with valid `user` and known `feature`", () => {
+    test("With valid `user` and known `feature`", () => {
       const createdUser = {
-        features: ["read:user"],
+        features: ["read:user"]
       };
 
       expect(authorization.check(createdUser, "read:user")).toBe(true);
@@ -37,33 +37,33 @@ describe("models/authorization.js", () => {
   });
 
   describe(".filterOutput()", () => {
-    test("throws when without `user`", () => {
+    test("Throws when without `user`", () => {
       expect(() => {
         authorization.filterOutput();
       }).toThrow(InternalServerError);
     });
 
-    test("throws when without `user.features`", () => {
+    test("Throws when without `user.features`", () => {
       const createdUser = {
-        username: "newUser",
+        username: "newUser"
       };
       expect(() => {
         authorization.filterOutput(createdUser);
       }).toThrow(InternalServerError);
     });
 
-    test("throws when with unknown `feature`", () => {
+    test("Throws when with unknown `feature`", () => {
       const createdUser = {
-        features: [],
+        features: []
       };
       expect(() => {
         authorization.filterOutput(createdUser, "unknown:feature");
       }).toThrow(InternalServerError);
     });
 
-    test("throws when without `originalData`", () => {
+    test("Throws when without `originalData`", () => {
       const createdUser = {
-        features: ["read:user"],
+        features: ["read:user"]
       };
 
       expect(() => {
@@ -71,9 +71,9 @@ describe("models/authorization.js", () => {
       }).toThrow(InternalServerError);
     });
 
-    test("with valid `user`, known `feature` and `resource`", () => {
+    test("With valid `user`, known `feature` and `resource`", () => {
       const createdUser = {
-        features: ["read:user"],
+        features: ["read:user"]
       };
 
       const originalData = {
@@ -83,13 +83,13 @@ describe("models/authorization.js", () => {
         password: "validpassword",
         features: ["read:user"],
         created_at: "2026-0101T00:00:00:000Z",
-        updated_at: "2026-0101T00:00:00:000Z",
+        updated_at: "2026-0101T00:00:00:000Z"
       };
 
       let result = authorization.filterOutput(
         createdUser,
         "read:user",
-        originalData,
+        originalData
       );
 
       expect(result).toEqual({
@@ -97,7 +97,7 @@ describe("models/authorization.js", () => {
         username: "resource",
         features: ["read:user"],
         created_at: "2026-0101T00:00:00:000Z",
-        updated_at: "2026-0101T00:00:00:000Z",
+        updated_at: "2026-0101T00:00:00:000Z"
       });
     });
   });
