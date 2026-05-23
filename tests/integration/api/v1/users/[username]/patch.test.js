@@ -279,6 +279,11 @@ describe("PATCH /api/v1/users/[username]", () => {
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
       expect(responseBody.updated_at > responseBody.created_at).toBe(true);
+
+      const updatedUser1 = await user.findOneByUsername(user1.username);
+
+      expect(updatedUser1.email).toBe("UniqueEmail2@gmail.com");
+      expect(updatedUser1.email).not.toBe(user1.email);
     });
 
     test("With new `password`", async () => {
