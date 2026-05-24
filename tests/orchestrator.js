@@ -69,8 +69,8 @@ async function activateUser(createdUser) {
   return await activation.activateUserById(createdUser.id);
 }
 
-async function createSession(userId) {
-  return await session.create(userId);
+async function createSession(user) {
+  return await session.create(user.id);
 }
 
 async function deleteEmails() {
@@ -114,7 +114,7 @@ async function getLastEmail() {
 async function createUserWithSession(userObject) {
   const createdUser = await orchestrator.createUser(userObject);
   await orchestrator.activateUser(createdUser);
-  const session = await orchestrator.createSession(createdUser.id);
+  const session = await orchestrator.createSession(createdUser);
 
   return {
     ...createdUser,

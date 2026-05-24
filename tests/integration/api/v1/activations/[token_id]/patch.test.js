@@ -17,7 +17,7 @@ describe("PATCH to /api/v1/activations/[token_id]", () => {
       await orchestrator.activateUser(createdUser);
       const activationToken = activation.createToken(createdUser.id);
 
-      const sessionObject = await orchestrator.createSession(createdUser.id);
+      const sessionObject = await orchestrator.createSession(createdUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/activations/${activationToken}`,
@@ -45,7 +45,7 @@ describe("PATCH to /api/v1/activations/[token_id]", () => {
     test("With valid token associated with other unactivated user", async () => {
       const user1 = await orchestrator.createUser();
       await activation.activateUserById(user1.id);
-      const user1Cookie = await orchestrator.createSession(user1.id);
+      const user1Cookie = await orchestrator.createSession(user1);
 
       const user2 = await orchestrator.createUser();
       const user2ActivationToken = await activation.createToken(user2.id);
