@@ -111,7 +111,8 @@ describe("DELETE /api/v1/user", () => {
         value: "",
         maxAge: 0,
         path: "/",
-        httpOnly: true
+        httpOnly: true,
+        sameSite: "Lax"
       });
 
       // double-check assertions
