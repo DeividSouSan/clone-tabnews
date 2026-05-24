@@ -4,13 +4,11 @@ import user from "models/user.js";
 import authorization from "models/authorization";
 import { ForbiddenError } from "infra/errors";
 
-const router = createRouter();
-
-router.use(controller.injectUser);
-router.get(getHandler);
-router.patch(controller.checkUserFeature("update:user"), patchHandler);
-
-export default router.handler(controller.errorHandlers);
+export default createRouter()
+  .use(controller.injectUser)
+  .get(getHandler)
+  .patch(controller.checkUserFeature("update:user"), patchHandler)
+  .handler(controller.errorHandlers);
 
 async function getHandler(request, response) {
   const userTrigger = request.context.user;
@@ -20,7 +18,7 @@ async function getHandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userTrigger,
     "read:user",
-    userFound,
+    userFound
   );
 
   return response.status(200).json(secureOutputValues);
@@ -38,7 +36,7 @@ async function patchHandler(request, response) {
     throw new ForbiddenError({
       message: "Você não possui permissão para atualizar outro usuário",
       action:
-        "Verifique se você possui a feature necessária para atualizar outro usuário",
+        "Verifique se você possui a feature necessária para atualizar outro usuário"
     });
   }
 
@@ -46,7 +44,7 @@ async function patchHandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userTrigger,
     "read:user",
-    userUpdated,
+    userUpdated
   );
 
   return response.status(200).json(secureOutputValues);

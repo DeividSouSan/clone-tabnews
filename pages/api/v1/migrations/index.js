@@ -3,13 +3,11 @@ import controller from "infra/handlers.js";
 import migrator from "models/migrator.js";
 import authorization from "models/authorization";
 
-const router = createRouter();
-
-router.use(controller.injectUser);
-router.get(controller.checkUserFeature("read:migrations"), getHandler);
-router.post(controller.checkUserFeature("run:migrations"), postHandler);
-
-export default router.handler(controller.errorHandlers);
+export default createRouter()
+  .use(controller.injectUser)
+  .get(controller.checkUserFeature("read:migrations"), getHandler)
+  .post(controller.checkUserFeature("run:migrations"), postHandler)
+  .handler(controller.errorHandlers);
 
 async function getHandler(request, response) {
   const userTrigger = request.context.user;
@@ -19,7 +17,7 @@ async function getHandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userTrigger,
     "read:migrations",
-    pendingMigrations,
+    pendingMigrations
   );
 
   return response.status(200).json(secureOutputValues);
@@ -32,7 +30,7 @@ async function postHandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userTrigger,
     "read:migrations",
-    migratedMigrations,
+    migratedMigrations
   );
 
   if (migratedMigrations.length > 0) {
