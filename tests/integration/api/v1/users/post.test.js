@@ -16,13 +16,13 @@ describe("POST /api/v1/users", () => {
       const response = await fetch(`${webserver.origin}/api/v1/users`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: "deividsousan",
           email: "deividsousan@gmail.com",
-          password: "senha123"
-        })
+          password: "senha123",
+        }),
       });
 
       expect(response.status).toBe(201);
@@ -34,7 +34,7 @@ describe("POST /api/v1/users", () => {
         username: "deividsousan",
         features: ["read:activation_token"],
         created_at: responseBody.created_at,
-        updated_at: responseBody.updated_at
+        updated_at: responseBody.updated_at,
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -45,13 +45,13 @@ describe("POST /api/v1/users", () => {
 
       const passwordMatch = await password.compare(
         "senha123",
-        userInDatabase.password
+        userInDatabase.password,
       );
       expect(passwordMatch).toBe(true);
 
       const passwordMismatch = await password.compare(
         "senha124",
-        userInDatabase.password
+        userInDatabase.password,
       );
       expect(passwordMismatch).toBe(false);
     });
@@ -60,13 +60,13 @@ describe("POST /api/v1/users", () => {
       const response1 = await fetch(`${webserver.origin}/api/v1/users`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: "emailduplicado1",
           email: "emailduplicado@gmail.com",
-          password: "senha123"
-        })
+          password: "senha123",
+        }),
       });
 
       expect(response1.status).toBe(201);
@@ -74,13 +74,13 @@ describe("POST /api/v1/users", () => {
       const response2 = await fetch(`${webserver.origin}/api/v1/users`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: "emailduplicado2",
           email: "EmailDuplicado@gmail.com",
-          password: "senha123"
-        })
+          password: "senha123",
+        }),
       });
 
       expect(response2.status).toBe(400);
@@ -91,7 +91,7 @@ describe("POST /api/v1/users", () => {
         name: "ValidationError",
         message: "O email fornercido já está sendo utilizado",
         action: "Utilize outro email para realizar esta operação",
-        status_code: 400
+        status_code: 400,
       });
     });
 
@@ -99,13 +99,13 @@ describe("POST /api/v1/users", () => {
       const response1 = await fetch(`${webserver.origin}/api/v1/users`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: "usernameduplicado",
           email: "usernameduplicado1@gmail.com",
-          password: "senha123"
-        })
+          password: "senha123",
+        }),
       });
 
       expect(response1.status).toBe(201);
@@ -113,13 +113,13 @@ describe("POST /api/v1/users", () => {
       const response2 = await fetch(`${webserver.origin}/api/v1/users`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: "UsernameDuplicado",
           email: "usernameduplicado2@gmail.com",
-          password: "senha123"
-        })
+          password: "senha123",
+        }),
       });
 
       expect(response2.status).toBe(400);
@@ -130,7 +130,7 @@ describe("POST /api/v1/users", () => {
         name: "ValidationError",
         message: "O nome de usuário fornercido já está sendo utilizado",
         action: "Utilize outro nome de usuário para realizar esta operação",
-        status_code: 400
+        status_code: 400,
       });
     });
   });
@@ -144,13 +144,13 @@ describe("POST /api/v1/users", () => {
       const response = await fetch(`${webserver.origin}/api/v1/users`, {
         method: "POST",
         headers: {
-          Cookie: `session_id=${sessionObject.token}`
+          Cookie: `session_id=${sessionObject.token}`,
         },
         body: JSON.stringify({
           username: "AuthCreateUser",
           email: "auth.create.user@curso.dev",
-          password: "AuthCreateUser"
-        })
+          password: "AuthCreateUser",
+        }),
       });
 
       expect(response.status).toBe(403);
@@ -161,7 +161,7 @@ describe("POST /api/v1/users", () => {
         name: "ForbiddenError",
         message: "Você não possui permissão para executar essa ação.",
         action: "Verifique se o seu usuário possui a feature create:user.",
-        status_code: 403
+        status_code: 403,
       });
     });
   });
@@ -171,7 +171,7 @@ describe("POST /api/v1/users", () => {
     const responseBody = await response.json();
     if (responseBody.dependencies.database.opened_connections !== 1) {
       throw new Error(
-        "Conexões que foram abertas não foram fechadas adequadamente."
+        "Conexões que foram abertas não foram fechadas adequadamente.",
       );
     }
   });

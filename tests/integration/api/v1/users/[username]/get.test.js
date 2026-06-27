@@ -12,11 +12,11 @@ describe("GET /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
     test("With exact case match", async () => {
       await orchestrator.createUser({
-        username: "MesmoCase"
+        username: "MesmoCase",
       });
 
       const response = await fetch(
-        `${webserver.origin}/api/v1/users/MesmoCase`
+        `${webserver.origin}/api/v1/users/MesmoCase`,
       );
 
       expect(response.status).toBe(200);
@@ -28,7 +28,7 @@ describe("GET /api/v1/users/[username]", () => {
         username: "MesmoCase",
         features: ["read:activation_token"],
         created_at: responseBody.created_at,
-        updated_at: responseBody.updated_at
+        updated_at: responseBody.updated_at,
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -38,11 +38,11 @@ describe("GET /api/v1/users/[username]", () => {
 
     test("With case mismatch", async () => {
       await orchestrator.createUser({
-        username: "CaseDiferente"
+        username: "CaseDiferente",
       });
 
       const response = await fetch(
-        `${webserver.origin}/api/v1/users/casediferente`
+        `${webserver.origin}/api/v1/users/casediferente`,
       );
 
       expect(response.status).toBe(200);
@@ -54,7 +54,7 @@ describe("GET /api/v1/users/[username]", () => {
         username: "CaseDiferente",
         features: ["read:activation_token"],
         created_at: responseBody.created_at,
-        updated_at: responseBody.updated_at
+        updated_at: responseBody.updated_at,
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -64,7 +64,7 @@ describe("GET /api/v1/users/[username]", () => {
 
     test("With no match", async () => {
       const response = await fetch(
-        `${webserver.origin}/api/v1/users/UsuarioInexistente`
+        `${webserver.origin}/api/v1/users/UsuarioInexistente`,
       );
 
       expect(response.status).toBe(404);
@@ -75,7 +75,7 @@ describe("GET /api/v1/users/[username]", () => {
         name: "NotFoundError",
         message: "O nome de usuário fornecido não foi encontrado no sistema.",
         action: "Verifique se o nome de usuário foi digitado corretamente.",
-        status_code: 404
+        status_code: 404,
       });
     });
   });
@@ -85,7 +85,7 @@ describe("GET /api/v1/users/[username]", () => {
     const responseBody = await response.json();
     if (responseBody.dependencies.database.opened_connections !== 1) {
       throw new Error(
-        "Conexões que foram abertas não foram fechadas adequadamente."
+        "Conexões que foram abertas não foram fechadas adequadamente.",
       );
     }
   });

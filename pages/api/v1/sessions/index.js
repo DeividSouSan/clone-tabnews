@@ -16,7 +16,7 @@ async function postHandler(request, response) {
 
   const userAuthenticated = await authentication.execute(
     inputData.email,
-    inputData.password
+    inputData.password,
   );
 
   const isAuthorized = authorization.check(userAuthenticated, "create:session");
@@ -24,7 +24,7 @@ async function postHandler(request, response) {
   if (!isAuthorized) {
     throw new ForbiddenError({
       message: "Você não possui permissão para fazer login.",
-      action: "Contate o suporte caso acredito que isso seja um erro."
+      action: "Contate o suporte caso acredito que isso seja um erro.",
     });
   }
 
@@ -35,7 +35,7 @@ async function postHandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userAuthenticated,
     "read:session",
-    newSession
+    newSession,
   );
 
   return response.status(201).json(secureOutputValues);
@@ -53,7 +53,7 @@ async function deleteHandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userTrigger,
     "read:session",
-    expiredSession
+    expiredSession,
   );
 
   return response.status(200).json(secureOutputValues);

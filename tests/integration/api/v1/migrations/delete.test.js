@@ -13,7 +13,7 @@ describe("DELETE /api/v1/migrations", () => {
   describe("Anonymous user", () => {
     test("Forbid user from deleting data", async () => {
       const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
-        method: "DELETE"
+        method: "DELETE",
       });
 
       expect(response.status).toBe(405);
@@ -24,7 +24,7 @@ describe("DELETE /api/v1/migrations", () => {
         message: "Método HTTP utilizado não é permitido para este endpoint.",
         action:
           "Verifique se o método HTTP enviado é válido para este endpoint.",
-        status_code: 405
+        status_code: 405,
       });
     });
 
@@ -33,7 +33,7 @@ describe("DELETE /api/v1/migrations", () => {
       const responseBody = await response.json();
       if (responseBody.dependencies.database.opened_connections !== 1) {
         throw new Error(
-          "Conexões que foram abertas não foram fechadas adequadamente."
+          "Conexões que foram abertas não foram fechadas adequadamente.",
         );
       }
     });

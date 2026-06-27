@@ -7,7 +7,7 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrationByName("1752772646510_create-users");
   await orchestrator.runPendingMigrationByName("1754759624163_create-sessions");
   await orchestrator.runPendingMigrationByName(
-    "1765132073864_add-features-to-users"
+    "1765132073864_add-features-to-users",
   );
 });
 
@@ -23,7 +23,7 @@ describe("GET to /api/v1/migrations", () => {
         name: "ForbiddenError",
         message: "Você não possui permissão para executar essa ação.",
         action: `Verifique se o seu usuário possui a feature read:migrations.`,
-        status_code: 403
+        status_code: 403,
       });
     });
   });
@@ -35,8 +35,8 @@ describe("GET to /api/v1/migrations", () => {
 
       const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         headers: {
-          Cookie: `session_id=${user.token}`
-        }
+          Cookie: `session_id=${user.token}`,
+        },
       });
 
       expect(response.status).toBe(200);
@@ -60,7 +60,7 @@ afterEach(async () => {
   const responseBody = await response.json();
   if (responseBody.dependencies.database.opened_connections !== 1) {
     throw new Error(
-      "Conexões que foram abertas não foram fechadas adequadamente."
+      "Conexões que foram abertas não foram fechadas adequadamente.",
     );
   }
 });

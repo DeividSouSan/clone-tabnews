@@ -21,7 +21,7 @@ async function postHandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userTrigger,
     "read:user",
-    userNew
+    userNew,
   );
 
   return response.status(201).json(secureOutputValues);

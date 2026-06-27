@@ -16,18 +16,18 @@ describe("POST /api/v1/sessions", () => {
   describe("Anonymous user", () => {
     test("With wrong `email` and correct `password`", async () => {
       await orchestrator.createUser({
-        passowrd: "senha.correta"
+        passowrd: "senha.correta",
       });
 
       const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: "email.errado@curso.dev",
-          password: "senha.correta"
-        })
+          password: "senha.correta",
+        }),
       });
 
       expect(response.status).toBe(401);
@@ -38,24 +38,24 @@ describe("POST /api/v1/sessions", () => {
         name: "UnauthorizedError",
         message: "Dados de autenticação não conferem.",
         action: "Verifique se os dados enviados estão corretos.",
-        status_code: 401
+        status_code: 401,
       });
     });
 
     test("With wrong `password` and correct `email`", async () => {
       await orchestrator.createUser({
-        email: "email.correto@curso.dev"
+        email: "email.correto@curso.dev",
       });
 
       const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: "email.correto@curso.dev",
-          password: "senha.errada"
-        })
+          password: "senha.errada",
+        }),
       });
 
       expect(response.status).toBe(401);
@@ -66,24 +66,24 @@ describe("POST /api/v1/sessions", () => {
         name: "UnauthorizedError",
         message: "Dados de autenticação não conferem.",
         action: "Verifique se os dados enviados estão corretos.",
-        status_code: 401
+        status_code: 401,
       });
     });
 
     test("With wrong `email` and wrong `password`", async () => {
       await orchestrator.createUser({
-        password: "senha.certa"
+        password: "senha.certa",
       });
 
       const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: "email.errado@curso.dev",
-          password: "senha.errada"
-        })
+          password: "senha.errada",
+        }),
       });
 
       expect(response.status).toBe(401);
@@ -94,14 +94,14 @@ describe("POST /api/v1/sessions", () => {
         name: "UnauthorizedError",
         message: "Dados de autenticação não conferem.",
         action: "Verifique se os dados enviados estão corretos.",
-        status_code: 401
+        status_code: 401,
       });
     });
 
     test("With correct `email` and correct `password`", async () => {
       const createdUser = await orchestrator.createUser({
         email: "sessao.email.correto@curso.dev",
-        password: "sessao.senha.correta"
+        password: "sessao.senha.correta",
       });
 
       await orchestrator.activateUser(createdUser);
@@ -109,12 +109,12 @@ describe("POST /api/v1/sessions", () => {
       const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: "sessao.email.correto@curso.dev",
-          password: "sessao.senha.correta"
-        })
+          password: "sessao.senha.correta",
+        }),
       });
 
       expect(response.status).toBe(201);
@@ -127,7 +127,7 @@ describe("POST /api/v1/sessions", () => {
         token: responseBody.token,
         created_at: responseBody.created_at,
         expires_at: responseBody.expires_at,
-        updated_at: responseBody.updated_at
+        updated_at: responseBody.updated_at,
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -157,7 +157,7 @@ describe("POST /api/v1/sessions", () => {
       expect(lifetimeDifferenceInMilliseconds).toBeLessThanOrEqual(5000);
 
       const parsedSetCookie = setCookieParser(response, {
-        map: true
+        map: true,
       });
 
       expect(parsedSetCookie.session_id).toEqual({
@@ -166,7 +166,7 @@ describe("POST /api/v1/sessions", () => {
         maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
         path: "/",
         httpOnly: true,
-        sameSite: "Lax"
+        sameSite: "Lax",
       });
     });
   });
@@ -176,7 +176,7 @@ describe("POST /api/v1/sessions", () => {
     const responseBody = await response.json();
     if (responseBody.dependencies.database.opened_connections !== 1) {
       throw new Error(
-        "Conexões que foram abertas não foram fechadas adequadamente."
+        "Conexões que foram abertas não foram fechadas adequadamente.",
       );
     }
   });

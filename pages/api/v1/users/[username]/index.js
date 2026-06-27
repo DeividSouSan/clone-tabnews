@@ -18,7 +18,7 @@ async function getHandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userTrigger,
     "read:user",
-    userFound
+    userFound,
   );
 
   return response.status(200).json(secureOutputValues);
@@ -36,7 +36,7 @@ async function patchHandler(request, response) {
     throw new ForbiddenError({
       message: "Você não possui permissão para atualizar outro usuário",
       action:
-        "Verifique se você possui a feature necessária para atualizar outro usuário"
+        "Verifique se você possui a feature necessária para atualizar outro usuário",
     });
   }
 
@@ -44,7 +44,7 @@ async function patchHandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userTrigger,
     "read:user",
-    userUpdated
+    userUpdated,
   );
 
   return response.status(200).json(secureOutputValues);

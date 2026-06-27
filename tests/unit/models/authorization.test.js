@@ -11,7 +11,7 @@ describe("models/authorization.js", () => {
 
     test("Throws when without `user.features`", () => {
       const createdUser = {
-        username: "newUser"
+        username: "newUser",
       };
       expect(() => {
         authorization.check(createdUser);
@@ -20,7 +20,7 @@ describe("models/authorization.js", () => {
 
     test("Throws when with unknown `feature`", () => {
       const createdUser = {
-        features: []
+        features: [],
       };
       expect(() => {
         authorization.check(createdUser, "unknown:feature");
@@ -29,7 +29,7 @@ describe("models/authorization.js", () => {
 
     test("With valid `user` and known `feature`", () => {
       const createdUser = {
-        features: ["read:user"]
+        features: ["read:user"],
       };
 
       expect(authorization.check(createdUser, "read:user")).toBe(true);
@@ -45,7 +45,7 @@ describe("models/authorization.js", () => {
 
     test("Throws when without `user.features`", () => {
       const createdUser = {
-        username: "newUser"
+        username: "newUser",
       };
       expect(() => {
         authorization.filterOutput(createdUser);
@@ -54,7 +54,7 @@ describe("models/authorization.js", () => {
 
     test("Throws when with unknown `feature`", () => {
       const createdUser = {
-        features: []
+        features: [],
       };
       expect(() => {
         authorization.filterOutput(createdUser, "unknown:feature");
@@ -63,7 +63,7 @@ describe("models/authorization.js", () => {
 
     test("Throws when without `originalData`", () => {
       const createdUser = {
-        features: ["read:user"]
+        features: ["read:user"],
       };
 
       expect(() => {
@@ -73,7 +73,7 @@ describe("models/authorization.js", () => {
 
     test("With valid `user`, known `feature` and `resource`", () => {
       const createdUser = {
-        features: ["read:user"]
+        features: ["read:user"],
       };
 
       const originalData = {
@@ -83,13 +83,13 @@ describe("models/authorization.js", () => {
         password: "validpassword",
         features: ["read:user"],
         created_at: "2026-01-01T00:00:00:000Z",
-        updated_at: "2026-01-01T00:00:00:000Z"
+        updated_at: "2026-01-01T00:00:00:000Z",
       };
 
       let result = authorization.filterOutput(
         createdUser,
         "read:user",
-        originalData
+        originalData,
       );
 
       expect(result).toEqual({
@@ -97,7 +97,7 @@ describe("models/authorization.js", () => {
         username: "resource",
         features: ["read:user"],
         created_at: "2026-01-01T00:00:00:000Z",
-        updated_at: "2026-01-01T00:00:00:000Z"
+        updated_at: "2026-01-01T00:00:00:000Z",
       });
     });
   });
