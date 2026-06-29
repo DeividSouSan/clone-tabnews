@@ -5,13 +5,11 @@ import session from "models/session.js";
 import { ForbiddenError } from "infra/errors";
 import authorization from "models/authorization";
 
-const router = createRouter();
-
-router.use(controller.injectUser);
-router.post(controller.checkUserFeature("create:session"), postHandler);
-router.delete(deleteHandler);
-
-export default router.handler(controller.errorHandlers);
+export default createRouter()
+  .use(controller.injectUser)
+  .post(controller.checkUserFeature("create:session"), postHandler)
+  .delete(deleteHandler)
+  .handler(controller.errorHandlers);
 
 async function postHandler(request, response) {
   const inputData = request.body;

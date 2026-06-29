@@ -4,13 +4,11 @@ import user from "models/user.js";
 import authorization from "models/authorization";
 import { ForbiddenError } from "infra/errors";
 
-const router = createRouter();
-
-router.use(controller.injectUser);
-router.get(getHandler);
-router.patch(controller.checkUserFeature("update:user"), patchHandler);
-
-export default router.handler(controller.errorHandlers);
+export default createRouter()
+  .use(controller.injectUser)
+  .get(getHandler)
+  .patch(controller.checkUserFeature("update:user"), patchHandler)
+  .handler(controller.errorHandlers);
 
 async function getHandler(request, response) {
   const userTrigger = request.context.user;

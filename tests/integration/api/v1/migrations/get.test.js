@@ -1,5 +1,6 @@
 import orchestrator from "tests/orchestrator";
 
+import webserver from "infra/webserver";
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
@@ -13,7 +14,7 @@ beforeAll(async () => {
 describe("GET to /api/v1/migrations", () => {
   describe("Anonymous user", () => {
     test("Retrieving pending migrations", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/migrations");
+      const response = await fetch(`${webserver.origin}/api/v1/migrations`);
       expect(response.status).toBe(403);
 
       const responseBody = await response.json();
@@ -32,7 +33,7 @@ describe("GET to /api/v1/migrations", () => {
       const user = await orchestrator.createUserWithSession();
       await orchestrator.addFeaturesToUser(user, ["read:migrations"]);
 
-      const response = await fetch("http://localhost:3000/api/v1/migrations", {
+      const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         headers: {
           Cookie: `session_id=${user.token}`,
         },
@@ -55,7 +56,7 @@ describe("GET to /api/v1/migrations", () => {
 });
 
 afterEach(async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
+  const response = await fetch(`${webserver.origin}/api/v1/status`);
   const responseBody = await response.json();
   if (responseBody.dependencies.database.opened_connections !== 1) {
     throw new Error(

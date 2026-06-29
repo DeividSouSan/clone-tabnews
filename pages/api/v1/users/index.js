@@ -4,13 +4,10 @@ import user from "models/user.js";
 import activation from "models/activation.js";
 import authorization from "models/authorization";
 
-const router = createRouter();
-
-router.use(controller.injectUser);
-router.use(controller.checkUserFeature("create:user"), postHandler);
-router.post(postHandler);
-
-export default router.handler(controller.errorHandlers);
+export default createRouter()
+  .use(controller.injectUser)
+  .post(controller.checkUserFeature("create:user"), postHandler)
+  .handler(controller.errorHandlers);
 
 async function postHandler(request, response) {
   const userTrigger = request.context.user;

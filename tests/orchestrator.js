@@ -2,9 +2,10 @@ import database from "infra/database.js";
 import migrator from "models/migrator.js";
 import user from "models/user.js";
 import session from "models/session.js";
+import webserver from "infra/webserver";
 
 import retry from "async-retry";
-import { faker } from "@faker-js/faker/.";
+import { faker } from "@faker-js/faker";
 import activation from "models/activation";
 
 const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}/messages`;
@@ -20,7 +21,7 @@ async function waitForAllServices() {
     });
 
     async function fetchStatusPage() {
-      const response = await fetch("http://localhost:3000/api/v1/status");
+      const response = await fetch(`${webserver.origin}/api/v1/status`);
 
       if (!response.ok) {
         throw Error();
@@ -68,8 +69,8 @@ async function activateUser(createdUser) {
   return await activation.activateUserById(createdUser.id);
 }
 
-async function createSession(userId) {
-  return await session.create(userId);
+async function createSession(user) {
+  return await session.create(user.id);
 }
 
 async function deleteEmails() {
@@ -113,7 +114,7 @@ async function getLastEmail() {
 async function createUserWithSession(userObject) {
   const createdUser = await orchestrator.createUser(userObject);
   await orchestrator.activateUser(createdUser);
-  const session = await orchestrator.createSession(createdUser.id);
+  const session = await orchestrator.createSession(createdUser);
 
   return {
     ...createdUser,

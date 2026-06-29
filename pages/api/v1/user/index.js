@@ -4,13 +4,10 @@ import user from "models/user.js";
 import session from "models/session.js";
 import authorization from "models/authorization";
 
-const router = createRouter();
-
-router.use(controller.injectUser);
-router.use(controller.checkUserFeature("read:session"), getHandler);
-router.get(getHandler);
-
-export default router.handler(controller.errorHandlers);
+export default createRouter()
+  .use(controller.injectUser)
+  .get(controller.checkUserFeature("read:session"), getHandler)
+  .handler(controller.errorHandlers);
 
 async function getHandler(request, response) {
   const userTrigger = request.context.user;

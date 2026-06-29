@@ -3,12 +3,10 @@ import database from "infra/database.js";
 import controller from "infra/handlers.js";
 import authorization from "models/authorization";
 
-const router = createRouter();
-
-router.use(controller.injectUser);
-router.get(getHandler);
-
-export default router.handler(controller.errorHandlers);
+export default createRouter()
+  .use(controller.injectUser)
+  .get(getHandler)
+  .handler(controller.errorHandlers);
 
 async function getHandler(request, response) {
   const userTrigger = request.context.user;

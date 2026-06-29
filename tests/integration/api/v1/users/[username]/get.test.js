@@ -1,6 +1,7 @@
 import orchestrator from "tests/orchestrator.js";
 import { version as uuidVersion } from "uuid";
 
+import webserver from "infra/webserver";
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
@@ -15,7 +16,7 @@ describe("GET /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/MesmoCase",
+        `${webserver.origin}/api/v1/users/MesmoCase`,
       );
 
       expect(response.status).toBe(200);
@@ -41,7 +42,7 @@ describe("GET /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/casediferente",
+        `${webserver.origin}/api/v1/users/casediferente`,
       );
 
       expect(response.status).toBe(200);
@@ -63,7 +64,7 @@ describe("GET /api/v1/users/[username]", () => {
 
     test("With no match", async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/UsuarioInexistente",
+        `${webserver.origin}/api/v1/users/UsuarioInexistente`,
       );
 
       expect(response.status).toBe(404);
@@ -80,7 +81,7 @@ describe("GET /api/v1/users/[username]", () => {
   });
 
   afterEach(async () => {
-    const response = await fetch("http://localhost:3000/api/v1/status");
+    const response = await fetch(`${webserver.origin}/api/v1/status`);
     const responseBody = await response.json();
     if (responseBody.dependencies.database.opened_connections !== 1) {
       throw new Error(

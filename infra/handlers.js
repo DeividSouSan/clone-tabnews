@@ -39,23 +39,30 @@ function onErrorHandler(error, request, response) {
   return response.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
-async function setCookie(sessionToken, response) {
-  const setCookie = cookie.serialize("session_id", sessionToken, {
+function setCookie(sessionToken, response) {
+  const setCookie = cookie.stringifySetCookie({
+    name: "session_id",
+    value: sessionToken,
     path: "/",
     maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
+    sameSite: "lax",
   });
+
   response.setHeader("Set-Cookie", setCookie);
 }
 
-async function clearSessionCookie(response) {
-  const setCookie = cookie.serialize("session_id", "", {
+function clearSessionCookie(response) {
+  const setCookie = cookie.stringifySetCookie({
+    name: "session_id",
     path: "/",
     maxAge: 0,
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
+    sameSite: "lax",
   });
+
   response.setHeader("Set-Cookie", setCookie);
 }
 
