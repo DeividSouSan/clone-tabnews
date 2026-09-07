@@ -1,7 +1,17 @@
 import Head from "next/head";
 import { Header, PageLayout, Text } from "@primer/react";
+import styles from "./index.module.css";
 
-export default function DefaultLayout({ children, metadata = {} }) {
+const contentWidthClasses = {
+  small: styles.smallContent,
+};
+
+export default function DefaultLayout({
+  children,
+  contentWidth = "full",
+  metadata = {},
+}) {
+  const contentExtraWidthClass = contentWidthClasses[contentWidth];
   return (
     <>
       <Head>
@@ -13,6 +23,7 @@ export default function DefaultLayout({ children, metadata = {} }) {
       {metadata.description && (
         <meta name="description" content={metadata.description} />
       )}
+
       <Header>
         <Header.Item full>
           <Header.Link href="/">FinTab</Header.Link>
@@ -26,7 +37,12 @@ export default function DefaultLayout({ children, metadata = {} }) {
       </Header>
 
       <PageLayout>
-        <PageLayout.Content>{children}</PageLayout.Content>
+        <PageLayout.Content
+          width={contentWidth}
+          className={contentExtraWidthClass}
+        >
+          {children}
+        </PageLayout.Content>
         <PageLayout.Footer divider="line">
           <Text size="small" as="p" align="center">
             © {new Date().getFullYear()} FinTab
